@@ -1,0 +1,79 @@
+body {
+  background-color: blanchedalmond;
+  color: #224;
+  font-family: Roboto, sans-serif;
+  text-align: center;
+}
+
+button {
+  border: 1px solid cornflowerblue;
+  border-radius: 0;
+  box-shadow: 1px 1px 4px #224;
+  margin: 8px 4px;
+  padding: 8px 12px;
+  transition: 0.5s;
+}
+
+button:hover {
+  box-shadow: 2px 2px 4px #446;
+}
+
+.container {
+  border: 1px solid sienna;
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  padding: 10px;
+}
+
+.container-v {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 5px;
+}
+
+.container-v h1 {
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.panel {
+  align-items: center;
+  background-color: aliceblue;
+  border: 1px solid cornflowerblue;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 3px;
+  padding: 5px 10px;
+}
+
+.counter > .quantity {
+  color: cornflowerblue;
+  font-size: 2em;
+  text-shadow: 1px 1px 0 #224;
+}
+
+.description {
+  font-size: 0.6em;
+  min-width: 100%;
+  width: 0;
+}
+
+.label {
+  font-size: 1em;
+}
+
+.price {
+  color: cornflowerblue;
+  margin: 3px;
+  text-shadow: 1px 1px 0 #224;
+}
+
+.shop-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}

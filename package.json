@@ -1,0 +1,28 @@
+{
+  "name": "midas",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "garrettgsb",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-react": "^6.24.1",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.3",
+    "webpack-dev-server": "^3.1.4"
+  },
+  "scripts": {
+    "start": "webpack-dev-server index.js --mode=development",
+    "build": "webpack"
+  },
+  "babel": {
+    "presets": [
+      "react"
+    ]
+  }
+}
