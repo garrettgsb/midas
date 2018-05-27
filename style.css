@@ -9,13 +9,24 @@ button {
   border: 1px solid cornflowerblue;
   border-radius: 0;
   box-shadow: 1px 1px 4px #224;
-  margin: 8px 4px;
-  padding: 8px 12px;
+  margin: 4px 4px;
+  padding: 4px 0;
   transition: 0.5s;
+  width: 100%;
 }
 
 button:hover {
   box-shadow: 2px 2px 4px #446;
+}
+
+select   {
+  border: 1px solid cornflowerblue;
+  border-radius: 0;
+  box-shadow: 1px 1px 4px #224;
+  margin: 8px 4px;
+  padding: 4px 6px;
+  transition: 0.5s;
+  width: 100%;
 }
 
 .container {
@@ -49,6 +60,10 @@ button:hover {
   padding: 5px 10px;
 }
 
+.counter {
+  min-width: 100px;
+}
+
 .counter > .quantity {
   color: cornflowerblue;
   font-size: 2em;
@@ -72,8 +87,9 @@ button:hover {
 }
 
 .shop-item {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
 }
