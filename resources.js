@@ -75,7 +75,7 @@ class Tin extends Resource {
     this.quantity = 0;
     this.unlocked = true;
     this.verb = 'Scrounge';
-    this.transmutationTargets = {lead: 4};
+    this.transmutationTargets = {iron: 4, lead: 10};
     this.find = () => {
       this.quantity += this.findVolume;
       this.forceAppUpdate();
