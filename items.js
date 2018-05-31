@@ -6,11 +6,18 @@ class Item {
     this.label = 'Unnamed Item';
     this.description = 'A rare glimpse behind the curtain. Probably here by accident.';
     this.price = 0;
-    this.unlocked = false;
+  }
+
+  get unlocked() {
+    return false;
+  }
+
+  get canAfford() {
+    return this.resources.gold.quantity >= this.price;
   }
 
   buy() {
-    if (this.resources.gold.quantity >= this.price) {
+    if (this.canAfford) {
       this.resources.gold.quantity -= this.price;
       this.buyAction();
       this.forceAppUpdate();
@@ -31,7 +38,10 @@ class LeadCatalyst extends Item {
     this.label = 'Lead Catalyst';
     this.description = 'Reduces the amount of lead required to produce gold';
     this.price = 3;
-    this.unlocked = true;
+  }
+
+  get unlocked() {
+    return true;
   }
 
   buyAction() {
@@ -47,7 +57,10 @@ class MetalDetector extends Item {
     this.label = 'Metal Detector';
     this.description = 'Find more lead each time you search';
     this.price = 1;
-    this.unlocked = true;
+  }
+
+  get unlocked() {
+    true;
   }
 
   buyAction() {

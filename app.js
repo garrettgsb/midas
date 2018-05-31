@@ -1,20 +1,30 @@
 import React from 'react';
 import { Lead, Gold } from './resources.js';
 import { LeadCatalyst, MetalDetector } from './items.js';
+import { Counter, Button } from './lib';
+import Shop from './shop';
+import Help from './help';
+import Industry from './industry';
+import Alchemy from './alchemy';
 
 class App extends React.Component {
   constructor() {
-    super()
+    super();
+    const fu = this.forceUpdate.bind(this);
+    const resources = {
+      lead: new Lead(fu),
+      gold: new Gold(fu),
+    };
+    const items = [
+      new LeadCatalyst(fu, resources),
+      new MetalDetector(fu, resources)
+    ];
     this.state = {
-      resources: {
-        lead: new Lead(this.forceUpdate.bind(this)),
-        gold: new Gold(this.forceUpdate.bind(this)),
-      },
-      items: []
+      resources,
+      items,
+      maxGold: 0,
     };
     this.state.resources.lead.setQuantity(10);
-    this.state.items.push(new LeadCatalyst(this.forceUpdate.bind(this), this.state.resources));
-    this.state.items.push(new MetalDetector(this.forceUpdate.bind(this), this.state.resources));
   }
 
   transmute(from, to) {
@@ -23,25 +33,40 @@ class App extends React.Component {
     }
   }
 
+  componentWillUpdate() {
+    const [current, max] = [this.state.resources.gold.quantity, this.state.maxGold];
+    this.state.maxGold =  Math.max(current, max);
+  }
+
   render() {
     return (
       <div className='container-v'>
+        <h1>Resources</h1>
         <div className='container'>
           {Object.values(this.state.resources).map(resource => {
-            return <ResourcePanel key={resource.name} resource={resource} resources={this.state.resources} transmute={this.transmute} />
+            return <ResourcePanel
+              key={resource.name}
+              resource={resource}
+              resources={this.state.resources}
+              transmute={this.transmute}
+            />
           })}
         </div>
-            <Shop items={this.state.items} />
+        <Shop items={this.state.items} />
+        <Help />
+        <Industry />
+        <Alchemy />
       </div>
     );
   };
 };
 
 class ResourcePanel extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {};
   }
+
   componentDidMount() {
     if (this.refs.transTarget && Object.keys(this.props.resource.transmutationTargets).length > 0) {
       const firstTarget = this.refs.transTarget.value || '';
@@ -58,16 +83,22 @@ class ResourcePanel extends React.Component {
     return (
       <div className='panel'>
         <Counter label={resource.label} quantity={resource.quantity} />
-        {resource.find &&
+        {resource.name === 'gold' && <p>{`Total produced: ${resource.produced}`}</p>}
+        {
+          resource.find &&
           <Button label={`${resource.verb} (${resource.findVolume})`} clickAction={resource.find}/>
         }
         {
           Object.keys(resource.transmutationTargets).length > 0 &&
           <div className='transmute-box'>
-            <Button label={'Transmute to...'} clickAction={() => {
-              transmute(resource, resources[this.state.transmuteTarget])
-            }}/>
-            <select ref={'transTarget'} onChange={(e) => this.dropdownChange(e)}>
+            <Button
+              inactive={!resource.canTransmuteTo(resources[this.state.transmuteTarget])}
+              label={'Transmute to...'}
+              clickAction={() => {
+                transmute(resource, resources[this.state.transmuteTarget])
+              }}
+            />
+            <select ref='transTarget' onChange={(e) => this.dropdownChange(e)}>
               {Object.entries(resource.transmutationTargets).map(target => {
                 const [name, value] = target;
                 return (<option key={name} value={name}>{`${resources[name].label} (${value})`}</option>)
@@ -79,50 +110,6 @@ class ResourcePanel extends React.Component {
     );
   };
 }
-
-const Button = ({label, clickAction}) => {
-  return (
-    <button onClick={clickAction}>{label}</button>
-  );
-};
-
-const Counter = ({label, quantity}) => {
-  return (
-    <div className='counter'>
-      <p className='quantity'>{quantity}</p>
-      <p className='label'>{label}</p>
-    </div>
-  );
-};
-
-class Shop extends React.Component {
-  render() {
-    return (
-      <div className='container-v'>
-        <h1>Shop</h1>
-        <div className='container shop'>
-          {this.props.items.map(item => {
-            return (<ShopItem key={item.name} item={item} />);
-          })}
-        </div>
-      </div>
-    );
-  };
-};
-
-const ShopItem = ({item}) => {
-  const {name, label, description, price} = item;
-  return (
-    <div className='shop-item'>
-      <p className='label'>{label}</p>
-      <p className='description'>{description}</p>
-      <div>
-        <p className='price'>{price}</p>
-        <Button label='Buy' clickAction={item.buy.bind(item)} />
-      </div>
-    </div>
-  );
-};
 
 
 export default App;

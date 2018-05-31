@@ -93,3 +93,11 @@ select   {
   justify-content: space-between;
   padding: 10px;
 }
+
+.inactive {
+  /* border: 0 solid #666; */
+  /* box-shadow: 0 0 0 black; */
+  color: #99B;
+  opacity: 0.5;
+  transition: 0.5s;
+}
