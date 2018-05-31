@@ -35,6 +35,54 @@ class Resource {
   }
 }
 
+class Spinach extends Resource {
+  constructor(forceUpdate) {
+    super(forceUpdate)
+    this.label = 'Spinach';
+    this.name = 'spinach';
+    this.quantity = 0;
+    this.unlocked = true;
+    this.verb = 'Pluck';
+    this.transmutationTargets = {iron: 3};
+    this.find = () => {
+      this.quantity += this.findVolume;
+      this.forceAppUpdate();
+    };
+  }
+}
+
+class Iron extends Resource {
+  constructor(forceUpdate) {
+    super(forceUpdate)
+    this.label = 'Iron';
+    this.name = 'iron';
+    this.quantity = 0;
+    this.unlocked = true;
+    this.verb = 'Scrounge';
+    this.transmutationTargets = {lead: 2};
+    this.find = () => {
+      this.quantity += this.findVolume;
+      this.forceAppUpdate();
+    };
+  }
+}
+
+class Tin extends Resource {
+  constructor(forceUpdate) {
+    super(forceUpdate)
+    this.label = 'Tin';
+    this.name = 'tin';
+    this.quantity = 0;
+    this.unlocked = true;
+    this.verb = 'Scrounge';
+    this.transmutationTargets = {lead: 4};
+    this.find = () => {
+      this.quantity += this.findVolume;
+      this.forceAppUpdate();
+    };
+  }
+}
+
 class Lead extends Resource {
   constructor(forceUpdate) {
     super(forceUpdate)
@@ -64,5 +112,5 @@ class Gold extends Resource {
   }
 }
 
-export { Lead, Gold };
+export { Spinach, Iron, Tin, Lead, Gold };
 export default Resource;
