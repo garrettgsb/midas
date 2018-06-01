@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lead, Gold } from './resources.js';
+import { Spinach, Iron, Tin, Lead, Gold } from './resources.js';
 import { LeadCatalyst, MetalDetector } from './items.js';
 import { Counter, Button } from './lib';
 import Shop from './shop';
@@ -12,6 +12,9 @@ class App extends React.Component {
     super();
     const fu = this.forceUpdate.bind(this);
     const resources = {
+      spinach: new Spinach(fu),
+      iron: new Iron(fu),
+      tin: new Tin(fu),
       lead: new Lead(fu),
       gold: new Gold(fu),
     };
