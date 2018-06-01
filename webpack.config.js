@@ -23,17 +23,17 @@ const config = {
         }
       },
 
-      // // https://webpack.js.org/loaders/sass-loader/
-      // {
-      //   test: /\.(c|sa|sc)ss$/,
-      //   use: [{
-      //     loader: 'style-loader'
-      //   }, {
-      //     loader: 'css-loader'
-      //   }, {
-      //     loader: 'sass-loader'
-      //   }]
-      // }
+      // https://webpack.js.org/loaders/sass-loader/
+      {
+        test: /\.(c|sa|sc)ss$/,
+        use: [{
+          loader: 'style-loader'
+        }, {
+          loader: 'css-loader'
+        }, {
+          loader: 'sass-loader'
+        }]
+      },
     ]
   },
 };

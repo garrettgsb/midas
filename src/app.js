@@ -7,6 +7,8 @@ import Help from './views/help';
 import Industry from './views/industry';
 import Alchemy from './views/alchemy';
 
+require('./styles/style.css');
+
 class App extends React.Component {
   constructor() {
     super();
