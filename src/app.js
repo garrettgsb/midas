@@ -1,11 +1,13 @@
 import React from 'react';
-import { Spinach, Iron, Tin, Lead, Gold } from './resources.js';
-import { LeadCatalyst, MetalDetector } from './items.js';
-import { Counter, Button } from './lib';
-import Shop from './shop';
-import Help from './help';
-import Industry from './industry';
-import Alchemy from './alchemy';
+import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
+import { LeadCatalyst, MetalDetector } from './models/items.js';
+import { Counter, Button } from './views/lib';
+import Shop from './views/shop';
+import Help from './views/help';
+import Industry from './views/industry';
+import Alchemy from './views/alchemy';
+
+require('./styles/style.css');
 
 class App extends React.Component {
   constructor() {
