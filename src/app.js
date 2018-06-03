@@ -1,6 +1,6 @@
 import React from 'react';
 import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
-import { LeadCatalyst, MetalDetector } from './models/items.js';
+import _items from './models/items';
 import { Counter, Button } from './views/lib';
 import Shop from './views/shop';
 import Help from './views/help';
@@ -9,24 +9,26 @@ import Alchemy from './views/alchemy';
 
 require('./styles/style.css');
 
+window.debug = window.debug || {};      // debugging hackery
+
 class App extends React.Component {
   constructor() {
     super();
     const fu = this.forceUpdate.bind(this);
-    const resources = {
-      spinach: new Spinach(fu),
-      iron: new Iron(fu),
-      tin: new Tin(fu),
-      lead: new Lead(fu),
-      gold: new Gold(fu),
+    const globalState = {
+      resources: {
+        spinach: new Spinach(fu),
+        iron: new Iron(fu),
+        tin: new Tin(fu),
+        lead: new Lead(fu),
+        gold: new Gold(fu),
+      },
+      items: {},
     };
-    const items = [
-      new LeadCatalyst(fu, resources),
-      new MetalDetector(fu, resources)
-    ];
+    window.debug.globalState = globalState;     // debugging hackery
+    globalState.items = _items(fu, globalState);
     this.state = {
-      resources,
-      items,
+      ...globalState,
       maxGold: 0,
     };
     this.state.resources.lead.setQuantity(10);
