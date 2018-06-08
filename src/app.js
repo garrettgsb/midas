@@ -38,8 +38,6 @@ class App extends React.Component {
 
   @autobind
   hireApprentice() {
-    console.log("narf, here's an apprentice");
-    var newbie = new Apprentice();
     this.setState({apprentices: [...this.state.apprentices, new Apprentice()]});
   }
 
@@ -51,7 +49,6 @@ class App extends React.Component {
 
   @autobind
   assign_toggle(appr) {
-    console.log("asstog");
     if (!this.state.amAssigning) {
       this.setState({
         amAssigning: appr,
@@ -67,9 +64,7 @@ class App extends React.Component {
   }
 
   assign_finish(appr, proposed_assignments) {
-    console.log("here's the stuff", appr.name, proposed_assignments);
     appr.assign(proposed_assignments);
-    // TODO: useful things
   }
 
   @autobind
