@@ -19,6 +19,10 @@ button:hover {
   box-shadow: 2px 2px 4px #446;
 }
 
+button.assigning {
+  border: 3px solid red;
+}
+
 select   {
   border: 1px solid cornflowerblue;
   border-radius: 0;
