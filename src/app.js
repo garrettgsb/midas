@@ -1,6 +1,8 @@
+import autobind from 'autobind-decorator';
 import React from 'react';
 import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
 import _items from './models/items';
+import Apprentice from './models/apprentices.js';
 import { Counter, Button } from './views/lib';
 import Shop from './views/shop';
 import Help from './views/help';
@@ -15,7 +17,7 @@ class App extends React.Component {
   constructor() {
     super();
     const fu = this.forceUpdate.bind(this);
-    const globalState = {
+    this.state = {
       resources: {
         spinach: new Spinach(fu),
         iron: new Iron(fu),
@@ -24,20 +26,51 @@ class App extends React.Component {
         gold: new Gold(fu),
       },
       items: {},
-    };
-    window.debug.globalState = globalState;     // debugging hackery
-    globalState.items = _items(fu, globalState);
-    this.state = {
-      ...globalState,
+      apprentices: [],
       maxGold: 0,
+      amAssigning: false,
     };
+    this.state.items = _items(fu, this.state);
     this.state.resources.lead.setQuantity(10);
+
+    // debugging hackery
+    window.globalState = this.state;
+  }
+
+  @autobind
+  hireApprentice() {
+    this.setState({apprentices: [...this.state.apprentices, new Apprentice()]});
   }
 
   transmute(from, to) {
     if (from.transmute(to)) {
       to.incrementBy(1);
     }
+  }
+
+  @autobind
+  assign_toggle(appr) {
+    if (!this.state.amAssigning) {
+      this.setState({
+        amAssigning: appr,
+        pending_assignment: []
+      });
+    } else {
+      this.assign_finish(appr, this.state.pending_assignment);
+      this.setState({
+        amAssigning: false,
+        pending_assignment: []
+      });
+    }
+  }
+
+  assign_finish(appr, proposed_assignments) {
+    appr.assign(proposed_assignments);
+  }
+
+  @autobind
+  assign_append(fn) {
+    this.setState({pending_assignment: [...this.state.pending_assignment, fn]});
   }
 
   componentWillUpdate() {
@@ -56,11 +89,17 @@ class App extends React.Component {
               resource={resource}
               resources={this.state.resources}
               transmute={this.transmute}
+              assigning={this.state.amAssigning ? this.assign_append : undefined}
             />
           })}
         </div>
         <Shop items={this.state.items} />
-        <Help />
+        <Help
+          apprentices={this.state.apprentices}
+          onHire={this.hireApprentice}
+          onAssign={this.assign_toggle}
+          currentAssignee={this.state.amAssigning.id}
+        />
         <Industry />
         <Alchemy />
       </div>
@@ -93,7 +132,11 @@ class ResourcePanel extends React.Component {
         {resource.name === 'gold' && <p>{`Total produced: ${resource.produced}`}</p>}
         {
           resource.find &&
-          <Button label={`${resource.verb} (${resource.findVolume})`} clickAction={resource.find}/>
+          <Button
+            label={`${resource.verb} (${resource.findVolume})`}
+            clickAction={resource.find}
+            assigning={this.props.assigning}
+          />
         }
         {
           Object.keys(resource.transmutationTargets).length > 0 &&
