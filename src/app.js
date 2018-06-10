@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
 import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
-import { LeadCatalyst, MetalDetector } from './models/items.js';
+import _items from './models/items';
 import Apprentice from './models/apprentices.js';
 import { Counter, Button } from './views/lib';
 import Shop from './views/shop';
@@ -11,29 +11,30 @@ import Alchemy from './views/alchemy';
 
 require('./styles/style.css');
 
+window.debug = window.debug || {};      // debugging hackery
+
 class App extends React.Component {
   constructor() {
     super();
     const fu = this.forceUpdate.bind(this);
-    const resources = {
-      spinach: new Spinach(fu),
-      iron: new Iron(fu),
-      tin: new Tin(fu),
-      lead: new Lead(fu),
-      gold: new Gold(fu),
-    };
-    const items = [
-      new LeadCatalyst(fu, resources),
-      new MetalDetector(fu, resources)
-    ];
     this.state = {
+      resources: {
+        spinach: new Spinach(fu),
+        iron: new Iron(fu),
+        tin: new Tin(fu),
+        lead: new Lead(fu),
+        gold: new Gold(fu),
+      },
+      items: {},
       apprentices: [],
-      resources,
-      items,
       maxGold: 0,
       amAssigning: false,
     };
+    this.state.items = _items(fu, this.state);
     this.state.resources.lead.setQuantity(10);
+
+    // debugging hackery
+    window.globalState = this.state;
   }
 
   @autobind
