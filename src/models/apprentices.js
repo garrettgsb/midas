@@ -18,15 +18,20 @@ function generateApprenticeName() {
     'Gerrald',
     'جيرالد',
     'জেরাল্ড',
+    'דזשעראַלד',
+    '杰拉尔德',
   ];
   return names[Math.floor(Math.random() * names.length)];
 }
 
 export default class Apprentice {
 
-  constructor() {
+  constructor(RPOT) {
     this.id = Math.random().toString();
     this.name = generateApprenticeName();
+    this.lastTick = 0;
+    this.tickLength = 1000;
+    RPOT.subscribe(this);
   }
 
   assign(actions) {
@@ -44,5 +49,13 @@ export default class Apprentice {
     this.act_index = (this.act_index + 1) % this.actions.length;
   }
 
-}
+  tick(now) {
+      if (now > this.lastTick + this.tickLength) {
+          this.lastTick = now;
+          if (this.can_act) this.act();
+          return true;
+      }
+      return false;
+  }
 
+}
