@@ -31,8 +31,7 @@ export default class Apprentice {
     this.name = generateApprenticeName();
     this.lastTick = 0;
     this.tickLength = 1000;
-    this.RPOT = RPOT;
-    this.RPOT.subscribe(this);
+    RPOT.subscribe(this);
   }
 
   assign(actions) {
