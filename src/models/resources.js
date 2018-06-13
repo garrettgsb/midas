@@ -28,7 +28,6 @@ class Resource {
   transmute(target) {
     if (this.canTransmuteTo(target)) {
       this.incrementBy(-1 * this.transmutationTargets[target.name]);
-      this.forceAppUpdate();
       return true;
     }
     return false;

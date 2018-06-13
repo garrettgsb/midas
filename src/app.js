@@ -30,6 +30,8 @@ class App extends React.Component {
       maxGold: 0,
       amAssigning: false,
     };
+    this.RPOT = new RelentlessPassageOfTime(fu);
+    this.RPOT.run();
     this.state.items = _items(fu, this.state);
     this.state.resources.lead.setQuantity(10);
 
@@ -39,7 +41,7 @@ class App extends React.Component {
 
   @autobind
   hireApprentice() {
-    this.setState({apprentices: [...this.state.apprentices, new Apprentice()]});
+    this.setState({apprentices: [...this.state.apprentices, new Apprentice(this.RPOT)]});
   }
 
   transmute(from, to) {
@@ -161,5 +163,22 @@ class ResourcePanel extends React.Component {
   };
 }
 
+class RelentlessPassageOfTime {
+    constructor(forceUpdate) {
+        this.forceUpdate = forceUpdate;
+        this.subscribers = [];
+    }
+
+    run() {
+        const _run = this.run.bind(this);
+        const requireUpdate = this.subscribers.reduce((acc, subscriber) => subscriber.tick(window.performance.now()) || acc, false);
+        if (requireUpdate) this.forceUpdate();
+        requestAnimationFrame(_run);
+    }
+
+    subscribe(subscriber) {
+        this.subscribers.push(subscriber);
+    }
+}
 
 export default App;
