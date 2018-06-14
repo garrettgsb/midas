@@ -108,6 +108,7 @@ class App extends React.Component {
         />
         <Industry
           industries={this.state.industries}
+          resources={this.state.resources}
           />
         <Alchemy />
       </div>
