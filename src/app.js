@@ -7,6 +7,7 @@ import { Counter, Button } from './views/lib';
 import Shop from './views/shop';
 import Help from './views/help';
 import Industry from './views/industry';
+import { SpinachGarden } from './models/industries';
 import Alchemy from './views/alchemy';
 
 require('./styles/style.css');
@@ -17,6 +18,7 @@ class App extends React.Component {
   constructor() {
     super();
     const fu = this.forceUpdate.bind(this);
+    this.RPOT = new RelentlessPassageOfTime(fu);
     this.state = {
       resources: {
         spinach: new Spinach(fu),
@@ -25,15 +27,17 @@ class App extends React.Component {
         lead: new Lead(fu),
         gold: new Gold(fu),
       },
+      industries: {
+        spinachGarden: new SpinachGarden(this.RPOT, fu),
+      },
       items: {},
       apprentices: [],
       maxGold: 0,
       amAssigning: false,
     };
-    this.RPOT = new RelentlessPassageOfTime(fu);
-    this.RPOT.run();
     this.state.items = _items(fu, this.state);
     this.state.resources.lead.setQuantity(10);
+    this.RPOT.run();
 
     // debugging hackery
     window.globalState = this.state;
@@ -102,7 +106,10 @@ class App extends React.Component {
           onAssign={this.assign_toggle}
           currentAssignee={this.state.amAssigning.id}
         />
-        <Industry />
+        <Industry
+          industries={this.state.industries}
+          resources={this.state.resources}
+          />
         <Alchemy />
       </div>
     );
