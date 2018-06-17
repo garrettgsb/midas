@@ -22,8 +22,9 @@ class Industry {
 		return false;
 	}
 
-	build() {
+	build(gold) {
 		this.maxQuantity += this.incrementMaxBy;
+		gold.quantity -= this.costToBuild;
 		this.forceAppUpdate();
 		}
 

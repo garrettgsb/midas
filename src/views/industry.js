@@ -46,7 +46,7 @@ class IndustryPanel extends React.Component {
           <Button
             inactive={resources['gold'].quantity < industry.costToBuild}
             label={`Build ${industry.label}`}
-            clickAction={industry.build.bind(industry)}
+            clickAction={industry.build.bind(industry, resources['gold'])}
           />
         </div>
       );
