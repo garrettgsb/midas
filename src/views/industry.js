@@ -25,19 +25,31 @@ class IndustryPanel extends React.Component {
     const industry = this.props.industry;
     const resources = this.props.resources;
 
-    return (
-      <div className='panel'>
-        <Counter label={industry.label} quantity={industry.quantity} />
-        <Button
-          label='Collect'
-          clickAction={industry.collect.bind(industry, resources[industry.targetResource])}
-        />
-        <Counter label='Max' quantity={industry.maxQuantity} />
+    if (industry.maxQuantity) {
+      return (
+        <div className='panel'>
+          <Counter label={industry.label} quantity={industry.quantity} />
+          <Button
+            label='Collect'
+            clickAction={industry.collect.bind(industry, resources[industry.targetResource])}
+          />
+          <Counter label='Max' quantity={industry.maxQuantity} />
           <Button
             label='Expand'
             clickAction={industry.build.bind(industry)}
           />
-      </div>
-    );
+        </div>
+      );
+    } else {
+      return (
+        <div className='panel'>
+          <Button
+            inactive={resources['gold'].quantity < industry.costToBuild}
+            label={`Build ${industry.label}`}
+            clickAction={industry.build.bind(industry, resources['gold'])}
+          />
+        </div>
+      );
+    }
   };
 };

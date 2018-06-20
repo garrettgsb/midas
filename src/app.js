@@ -7,7 +7,7 @@ import { Counter, Button } from './views/lib';
 import Shop from './views/shop';
 import Help from './views/help';
 import Industry from './views/industry';
-import { SpinachGarden } from './models/industries';
+import { SpinachGarden, IronMine, TinMine } from './models/industries';
 import Alchemy from './views/alchemy';
 
 require('./styles/style.css');
@@ -29,6 +29,8 @@ class App extends React.Component {
       },
       industries: {
         spinachGarden: new SpinachGarden(this.RPOT, fu),
+        ironMine: new IronMine(this.RPOT, fu),
+        tinMine: new TinMine(this.RPOT, fu),
       },
       items: {},
       apprentices: [],

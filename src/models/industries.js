@@ -3,6 +3,7 @@ class Industry {
 		this.name = 'unnamed resource';
     this.label = 'Unnamed Resource';
 		this.targetResource = 'untargeted industry';
+		this.costToBuild = 10;
 		this.maxQuantity = 0;
 		this.incrementMaxBy = 10;
 		this.quantity = 0;
@@ -21,8 +22,9 @@ class Industry {
 		return false;
 	}
 
-	build() {
+	build(gold) {
 		this.maxQuantity += this.incrementMaxBy;
+		gold.quantity -= this.costToBuild;
 		this.forceAppUpdate();
 		}
 
@@ -42,5 +44,23 @@ class SpinachGarden extends Industry {
 	}
 }
 
-export { SpinachGarden };
+class IronMine extends Industry {
+	constructor(RPOT, forceAppUpdate) {
+		super(RPOT, forceAppUpdate);
+		this.name = 'ironMine';
+		this.label = 'Iron Mine';
+		this.targetResource = 'iron';
+	}
+}
+
+class TinMine extends Industry {
+	constructor(RPOT, forceAppUpdate) {
+		super(RPOT, forceAppUpdate);
+		this.name = 'tinMine';
+		this.label = 'Tin Mine';
+		this.targetResource = 'tin';
+	}
+}
+
+export { SpinachGarden, IronMine, TinMine };
 export default Industry;
