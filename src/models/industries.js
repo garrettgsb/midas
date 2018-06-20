@@ -4,6 +4,9 @@ class Industry {
     this.label = 'Unnamed Resource';
 		this.targetResource = 'untargeted industry';
 		this.costToBuild = 10;
+		this.increaseBuildCost = function () {
+			this.costToBuild = this.costToBuild ** 2;
+		};
 		this.maxQuantity = 0;
 		this.incrementMaxBy = 10;
 		this.quantity = 0;
@@ -25,6 +28,7 @@ class Industry {
 	build(gold) {
 		this.maxQuantity += this.incrementMaxBy;
 		gold.quantity -= this.costToBuild;
+		this.increaseBuildCost();
 		this.forceAppUpdate();
 		}
 
