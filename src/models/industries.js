@@ -25,6 +25,7 @@ class Industry {
 	build(gold) {
 		this.maxQuantity += this.incrementMaxBy;
 		gold.quantity -= this.costToBuild;
+		this.increaseBuildCost();
 		this.forceAppUpdate();
 		}
 
@@ -32,6 +33,14 @@ class Industry {
 		resource.incrementBy(this.quantity);
 		this.quantity = 0;
 		this.forceAppUpdate();
+	}
+
+	canAfford(gold) {
+		return gold < this.costToBuild
+	}
+
+	increaseBuildCost() {
+		this.costToBuild = this.costToBuild ** 2;
 	}
 }
 

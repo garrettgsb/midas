@@ -35,8 +35,9 @@ class IndustryPanel extends React.Component {
           />
           <Counter label='Max' quantity={industry.maxQuantity} />
           <Button
-            label='Expand'
-            clickAction={industry.build.bind(industry)}
+            inactive={industry.canAfford(resources['gold'].quantity)}
+            label={`Expand (${industry.costToBuild} Au)`}
+            clickAction={industry.build.bind(industry, resources['gold'])}
           />
         </div>
       );
@@ -44,8 +45,8 @@ class IndustryPanel extends React.Component {
       return (
         <div className='panel'>
           <Button
-            inactive={resources['gold'].quantity < industry.costToBuild}
-            label={`Build ${industry.label}`}
+            inactive={industry.canAfford(resources['gold'].quantity)}
+            label={`Build ${industry.label} (${industry.costToBuild} Au)`}
             clickAction={industry.build.bind(industry, resources['gold'])}
           />
         </div>
