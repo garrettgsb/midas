@@ -13,7 +13,7 @@ import Alchemy from './views/alchemy';
 
 require('./styles/style.css');
 
-window.debug = window.debug || {};      // debugging hackery
+window.debug = window.debug || { hax: false };      // debugging hackery
 
 class App extends React.Component {
   constructor() {
@@ -90,7 +90,7 @@ class App extends React.Component {
   render() {
     return (
       <div className='container-v'>
-        <Debug/>
+        { window.debug.hax && <Debug/> }
         <h1>Resources</h1>
         <div className='container'>
           {Object.values(this.state.resources).map(resource => {
