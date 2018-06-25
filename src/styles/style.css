@@ -75,6 +75,32 @@ select   {
   text-shadow: 1px 1px 0 #224;
 }
 
+.debug {
+  background-color: rgba(255,200,200,0.6);
+  height: 400px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: 0.5s;
+  width: 400px;
+  display: flex;
+  /* flex-direction: row; */
+}
+
+.debug.closed {
+  background-color: firebrick;
+  height: 20px;
+  transition: 0.5s;
+  width: 20px;
+}
+
+.debug .toggle {
+  display: inline;
+  margin-left: auto;
+  margin-right: 3px;
+  margin-top: 0;
+}
+
 .description {
   font-size: 0.6em;
   min-width: 100%;

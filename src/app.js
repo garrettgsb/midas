@@ -3,6 +3,7 @@ import React from 'react';
 import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
 import _items from './models/items';
 import Apprentice from './models/apprentices.js';
+import Debug from './views/debug.js';
 import { Counter, Button } from './views/lib';
 import Shop from './views/shop';
 import Help from './views/help';
@@ -89,6 +90,7 @@ class App extends React.Component {
   render() {
     return (
       <div className='container-v'>
+        <Debug/>
         <h1>Resources</h1>
         <div className='container'>
           {Object.values(this.state.resources).map(resource => {
