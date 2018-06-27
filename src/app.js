@@ -94,6 +94,7 @@ class App extends React.Component {
       <div className='container-v'>
         <Resources
           amAssigning = {this.state.amAssigning}
+          appState = {this.state}
           assign_append = {this.assign_append.bind(this)}
           resources={this.state.resources}
           transmute = {this.transmute.bind(this)}

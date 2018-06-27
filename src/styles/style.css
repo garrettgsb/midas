@@ -40,6 +40,12 @@ select   {
   flex-wrap: wrap;
   margin: 10px;
   padding: 10px;
+  transition: 1s;
+
+  &.centered {
+    justify-content: center;
+    transition: 1s;
+  }
 }
 
 .container-v {

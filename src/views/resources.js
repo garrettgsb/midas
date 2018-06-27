@@ -1,12 +1,15 @@
 import React from 'react';
 import { Button, Counter } from './lib';
 
-const Resources = ({resources, transmute, amAssigning, assign_append}) => {
-  return (
+const Resources = ({appState, resources, transmute, amAssigning, assign_append}) => {
+  const unlocked = () => resources.gold.unlocked(appState);
+  return unlocked() ? (
     <div className='container-v'>
-      <h1>Resources</h1>
+      {/* <h1>Resources</h1> */}
       <div className='container'>
-        {Object.values(resources).map(resource => {
+        {Object.values(resources)
+          .filter(resource => resource.unlocked(appState))
+          .map(resource => {
           return <ResourcePanel
             key={resource.name}
             resource={resource}
@@ -15,6 +18,19 @@ const Resources = ({resources, transmute, amAssigning, assign_append}) => {
             assigning={amAssigning ? assign_append : undefined}
           />
         })}
+      </div>
+    </div>
+  ) :
+  (
+    <div className='container-v'>
+      <div className='container'>
+        <ResourcePanel
+          key={resources.lead.name}
+          resource={resources.lead}
+          resources={resources}
+          transmute={transmute}
+          assigning={amAssigning ? assign_append : undefined}
+        />
       </div>
     </div>
   );
