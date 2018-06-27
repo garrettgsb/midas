@@ -85,24 +85,24 @@ select   {
   width: 400px;
   display: flex;
   flex-direction: column;
-}
 
-.debug.closed {
-  background-color: firebrick;
-  height: 20px;
-  transition: 0.5s;
-  width: 20px;
-}
+  &.closed {
+    background-color: firebrick;
+    height: 20px;
+    transition: 0.5s;
+    width: 20px;
+  }
 
-.debug.closed * {
-  display: none;
-}
+  &.closed * {
+    display: none;
+  }
 
-.debug .toggle {
-  display: inline;
-  margin-left: auto;
-  margin-right: 3px;
-  margin-top: 0;
+  & .toggle {
+    display: inline;
+    margin-left: auto;
+    margin-right: 3px;
+    margin-top: 0;
+  }
 }
 
 .description {

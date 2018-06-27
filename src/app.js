@@ -13,7 +13,7 @@ import Alchemy from './views/alchemy';
 
 require('./styles/style.css');
 
-window.debug = window.debug || { hax: false };      // debugging hackery
+window.debug = window.debug || { hax: true };      // debugging hackery
 
 class App extends React.Component {
   constructor() {
