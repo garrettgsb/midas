@@ -111,6 +111,7 @@ class App extends React.Component {
         <Industry
           industries={this.state.industries}
           resources={this.state.resources}
+          assigning={this.state.amAssigning ? this.assign_append : undefined}
         />
         <Alchemy />
       </div>

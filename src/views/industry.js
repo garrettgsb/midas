@@ -13,7 +13,9 @@ export default class Industries extends React.Component {
         <div className='container-v'>
           <h1>Industries</h1>
           <div className='container industry'>
-            {Object.entries(this.industries).map(industry => <IndustryPanel key={industry[1].name} resources={this.resources} industry={industry[1]}/>)}
+            {Object.entries(this.industries).map(industry => 
+                <IndustryPanel key={industry[1].name} resources={this.resources} industry={industry[1]} assigning={this.props.assigning}/>
+            )}
           </div>
         </div>
     );
@@ -24,6 +26,7 @@ class IndustryPanel extends React.Component {
   render() {
     const industry = this.props.industry;
     const resources = this.props.resources;
+    const assigning = this.props.assigning;
 
     if (industry.maxQuantity) {
       return (
@@ -32,6 +35,7 @@ class IndustryPanel extends React.Component {
           <Button
             label='Collect'
             onClick={industry.collect.bind(industry, resources[industry.targetResource])}
+            onDelegate={assigning}
           />
           <Counter label='Max' quantity={industry.maxQuantity} />
           <Button
