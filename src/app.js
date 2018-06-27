@@ -91,7 +91,9 @@ class App extends React.Component {
       <div className='container-v'>
         <h1>Resources</h1>
         <div className='container'>
-          {Object.values(this.state.resources).map(resource => {
+          {Object.values(this.state.resources)
+          .filter(resource => resource.unlocked)
+          .map(resource => {
             return <ResourcePanel
               key={resource.name}
               resource={resource}
