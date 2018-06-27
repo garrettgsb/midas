@@ -31,13 +31,13 @@ class IndustryPanel extends React.Component {
           <Counter label={industry.label} quantity={industry.quantity} />
           <Button
             label='Collect'
-            clickAction={industry.collect.bind(industry, resources[industry.targetResource])}
+            onClick={industry.collect.bind(industry, resources[industry.targetResource])}
           />
           <Counter label='Max' quantity={industry.maxQuantity} />
           <Button
             inactive={industry.canAfford(resources['gold'].quantity)}
             label={`Expand (${industry.costToBuild} Au)`}
-            clickAction={industry.build.bind(industry, resources['gold'])}
+            onClick={industry.build.bind(industry, resources['gold'])}
           />
         </div>
       );
@@ -47,7 +47,7 @@ class IndustryPanel extends React.Component {
           <Button
             inactive={industry.canAfford(resources['gold'].quantity)}
             label={`Build ${industry.label} (${industry.costToBuild} Au)`}
-            clickAction={industry.build.bind(industry, resources['gold'])}
+            onClick={industry.build.bind(industry, resources['gold'])}
           />
         </div>
       );

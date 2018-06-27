@@ -111,7 +111,7 @@ class App extends React.Component {
         <Industry
           industries={this.state.industries}
           resources={this.state.resources}
-          />
+        />
         <Alchemy />
       </div>
     );
@@ -146,8 +146,8 @@ class ResourcePanel extends React.Component {
           resource.find &&
           <Button
             label={`${resource.verb} (${resource.findVolume})`}
-            clickAction={resource.find}
-            assigning={this.props.assigning}
+            onClick={resource.find}
+            onDelegate={this.props.assigning}
           />
         }
         {
@@ -156,10 +156,8 @@ class ResourcePanel extends React.Component {
             <Button
               inactive={!resource.canTransmuteTo(resources[this.state.transmuteTarget])}
               label={'Transmute to...'}
-              clickAction={() => {
-                transmute(resource, resources[currentTransmuteTarget])
-              }}
-              assigning={this.props.assigning}
+              onClick={ transmute.bind(null, resource, resources[currentTransmuteTarget]) }
+              onDelegate={this.props.assigning}
             />
             <select ref='transTarget' onChange={(e) => this.dropdownChange(e)}>
               {Object.entries(resource.transmutationTargets).map(target => {
