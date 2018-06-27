@@ -28,8 +28,12 @@ class ApprenticePanel extends React.Component {
 }
 
 export default class Help extends React.Component {
+  get unlocked() {
+    return this.props.appState.maxGold > 20;
+  }
+
   render() {
-    return (
+    return this.unlocked ? (
       <div className='container-v'>
         <h1>Help</h1>
         <div className='container help'>
@@ -44,7 +48,6 @@ export default class Help extends React.Component {
           ))}
         </div>
       </div>
-    );
+    ) : null;
   };
 }
-

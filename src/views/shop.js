@@ -2,8 +2,13 @@ import React from 'react';
 import { Button, Counter } from './lib';
 
 export default class Shop extends React.Component {
+  get unlocked() {
+    return this.props.appState.maxGold >= 10;
+  }
+
   render() {
-    return (
+    return this.unlocked ?
+    (
       <div className='container-v'>
         <h1>Shop</h1>
         <div className='container shop'>
@@ -12,7 +17,7 @@ export default class Shop extends React.Component {
           })}
         </div>
       </div>
-    );
+    ) : null;
   };
 };
 

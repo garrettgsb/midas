@@ -98,19 +98,21 @@ class App extends React.Component {
           resources={this.state.resources}
           transmute = {this.transmute.bind(this)}
         />
-        <Shop items={this.state.items} />
+        <Shop appState = {this.state} items={this.state.items} />
         <Help
+          appState = {this.state}
           apprentices={this.state.apprentices}
           onHire={this.hireApprentice}
           onAssign={this.assign_toggle}
           currentAssignee={this.state.amAssigning.id}
         />
         <Industry
+          appState = {this.state}
           industries={this.state.industries}
           resources={this.state.resources}
           assigning={this.state.amAssigning ? this.assign_append : undefined}
         />
-        <Alchemy />
+        <Alchemy appState = {this.state} />
       </div>
     );
   };

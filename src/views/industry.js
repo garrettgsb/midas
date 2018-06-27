@@ -8,17 +8,21 @@ export default class Industries extends React.Component {
     this.resources = this.props.resources;
   }
 
+  get unlocked() {
+    return this.maxGold > 5;
+  }
+
   render() {
-    return (
+    return this.unlocked ? (
         <div className='container-v'>
           <h1>Industries</h1>
           <div className='container industry'>
-            {Object.entries(this.industries).map(industry => 
+            {Object.entries(this.industries).map(industry =>
                 <IndustryPanel key={industry[1].name} resources={this.resources} industry={industry[1]} assigning={this.props.assigning}/>
             )}
           </div>
         </div>
-    );
+    ) : null;
   };
 };
 
