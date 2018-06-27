@@ -137,6 +137,7 @@ class ResourcePanel extends React.Component {
 
   render() {
     const {resource, resources, transmute} = this.props;
+    const currentTransmuteTarget = this.state.transmuteTarget;
     return (
       <div className='panel'>
         <Counter label={resource.label} quantity={resource.quantity} />
@@ -156,8 +157,9 @@ class ResourcePanel extends React.Component {
               inactive={!resource.canTransmuteTo(resources[this.state.transmuteTarget])}
               label={'Transmute to...'}
               clickAction={() => {
-                transmute(resource, resources[this.state.transmuteTarget])
+                transmute(resource, resources[currentTransmuteTarget])
               }}
+              assigning={this.props.assigning}
             />
             <select ref='transTarget' onChange={(e) => this.dropdownChange(e)}>
               {Object.entries(resource.transmutationTargets).map(target => {
