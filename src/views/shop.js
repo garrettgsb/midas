@@ -24,7 +24,7 @@ const ShopItem = ({item}) => {
       <p className='description'>{description}</p>
       <div>
         <p className='price'>{price.gold}</p>
-        <Button inactive={!item.canAfford} label='Buy' clickAction={item.buy.bind(item)} />
+        <Button inactive={!item.canAfford} label='Buy' onClick={item.buy.bind(item)} />
       </div>
     </div>
   );
