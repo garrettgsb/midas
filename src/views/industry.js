@@ -13,7 +13,9 @@ export default class Industries extends React.Component {
         <div className='container-v'>
           <h1>Industries</h1>
           <div className='container industry'>
-            {Object.entries(this.industries).map(industry => <IndustryPanel key={industry[1].name} resources={this.resources} industry={industry[1]}/>)}
+            {Object.entries(this.industries).map(industry => 
+                <IndustryPanel key={industry[1].name} resources={this.resources} industry={industry[1]} assigning={this.props.assigning}/>
+            )}
           </div>
         </div>
     );
@@ -24,6 +26,7 @@ class IndustryPanel extends React.Component {
   render() {
     const industry = this.props.industry;
     const resources = this.props.resources;
+    const assigning = this.props.assigning;
 
     if (industry.maxQuantity) {
       return (
@@ -31,13 +34,14 @@ class IndustryPanel extends React.Component {
           <Counter label={industry.label} quantity={industry.quantity} />
           <Button
             label='Collect'
-            clickAction={industry.collect.bind(industry, resources[industry.targetResource])}
+            onClick={industry.collect.bind(industry, resources[industry.targetResource])}
+            onDelegate={assigning}
           />
           <Counter label='Max' quantity={industry.maxQuantity} />
           <Button
             inactive={industry.canAfford(resources['gold'].quantity)}
             label={`Expand (${industry.costToBuild} Au)`}
-            clickAction={industry.build.bind(industry, resources['gold'])}
+            onClick={industry.build.bind(industry, resources['gold'])}
           />
         </div>
       );
@@ -47,7 +51,7 @@ class IndustryPanel extends React.Component {
           <Button
             inactive={industry.canAfford(resources['gold'].quantity)}
             label={`Build ${industry.label} (${industry.costToBuild} Au)`}
-            clickAction={industry.build.bind(industry, resources['gold'])}
+            onClick={industry.build.bind(industry, resources['gold'])}
           />
         </div>
       );

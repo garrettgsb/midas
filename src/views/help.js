@@ -3,7 +3,7 @@ import { Button, Counter } from './lib';
 
 
 const ApprenticeBuyPanel = ({onHire}) => {
-  return <Button label="Hire Help! 🙋" clickAction={onHire} />;
+  return <Button label="Hire Help! 🙋" onClick={onHire} />;
 };
 
 class ApprenticePanel extends React.Component {
@@ -11,17 +11,17 @@ class ApprenticePanel extends React.Component {
     var appr = this.props.apprentice;
     var assignButton;
     if (this.props.currentAssignee === appr.id) {
-      assignButton = <Button label="Save Assignment" clickAction={this.props.onToggleAssign} />
+      assignButton = <Button label="Save Assignment" onClick={this.props.onToggleAssign} />
     } else if (this.props.currentAssignee) {
       assignButton = <Button label="Assign" inactive={true} />
     } else {
-      assignButton = <Button label="Assign" clickAction={this.props.onToggleAssign} />
+      assignButton = <Button label="Assign" onClick={this.props.onToggleAssign} />
     }
     return (
       <div className='panel'>
         <p className='name'>{appr.name}</p>
         {assignButton}
-        <Button label="Act" inactive={!appr.can_act} clickAction={appr.act} />
+        <Button label="Act" inactive={!appr.can_act} onClick={appr.act} />
       </div>
     );
   }

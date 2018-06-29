@@ -1,15 +1,19 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
-import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
+
+import { SpinachGarden, IronMine, TinMine } from './models/industries';
 import _items from './models/items';
 import Apprentice from './models/apprentices.js';
 import Debug from './views/debug.js';
 import { Counter, Button } from './views/lib';
-import Shop from './views/shop';
+import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
+
+import Alchemy from './views/alchemy';
+import Apprentice from './models/apprentices.js';
 import Help from './views/help';
 import Industry from './views/industry';
-import { SpinachGarden, IronMine, TinMine } from './models/industries';
-import Alchemy from './views/alchemy';
+import Resources from './views/resources';
+import Shop from './views/shop';
 
 require('./styles/style.css');
 
@@ -91,18 +95,12 @@ class App extends React.Component {
     return (
       <div className='container-v'>
         { window.debug.hax && <Debug/> }
-        <h1>Resources</h1>
-        <div className='container'>
-          {Object.values(this.state.resources).map(resource => {
-            return <ResourcePanel
-              key={resource.name}
-              resource={resource}
-              resources={this.state.resources}
-              transmute={this.transmute}
-              assigning={this.state.amAssigning ? this.assign_append : undefined}
-            />
-          })}
-        </div>
+        <Resources
+          amAssigning = {this.state.amAssigning}
+          assign_append = {this.assign_append.bind(this)}
+          resources={this.state.resources}
+          transmute = {this.transmute.bind(this)}
+        />
         <Shop items={this.state.items} />
         <Help
           apprentices={this.state.apprentices}
@@ -113,66 +111,13 @@ class App extends React.Component {
         <Industry
           industries={this.state.industries}
           resources={this.state.resources}
-          />
+          assigning={this.state.amAssigning ? this.assign_append : undefined}
+        />
         <Alchemy />
       </div>
     );
   };
 };
-
-class ResourcePanel extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  componentDidMount() {
-    if (this.refs.transTarget && Object.keys(this.props.resource.transmutationTargets).length > 0) {
-      const firstTarget = this.refs.transTarget.value || '';
-      this.setState({transmuteTarget: firstTarget});
-    }
-  }
-
-  dropdownChange(e) {
-    this.setState({transmuteTarget: e.target.value});
-  }
-
-  render() {
-    const {resource, resources, transmute} = this.props;
-    return (
-      <div className='panel'>
-        <Counter label={resource.label} quantity={resource.quantity} />
-        {resource.name === 'gold' && <p>{`Total produced: ${resource.produced}`}</p>}
-        {
-          resource.find &&
-          <Button
-            label={`${resource.verb} (${resource.findVolume})`}
-            clickAction={resource.find}
-            assigning={this.props.assigning}
-          />
-        }
-        {
-          Object.keys(resource.transmutationTargets).length > 0 &&
-          <div className='transmute-box'>
-            <Button
-              inactive={!resource.canTransmuteTo(resources[this.state.transmuteTarget])}
-              label={'Transmute to...'}
-              clickAction={() => {
-                transmute(resource, resources[this.state.transmuteTarget])
-              }}
-            />
-            <select ref='transTarget' onChange={(e) => this.dropdownChange(e)}>
-              {Object.entries(resource.transmutationTargets).map(target => {
-                const [name, value] = target;
-                return (<option key={name} value={name}>{`${resources[name].label} (${value})`}</option>)
-              })}
-            </select>
-          </div>
-        }
-      </div>
-    );
-  };
-}
 
 class RelentlessPassageOfTime {
     constructor(forceUpdate) {
