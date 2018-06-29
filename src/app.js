@@ -3,11 +3,12 @@ import React from 'react';
 
 import { SpinachGarden, IronMine, TinMine } from './models/industries';
 import _items from './models/items';
+import Apprentice from './models/apprentices.js';
+import Debug from './views/debug.js';
 import { Counter, Button } from './views/lib';
 import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
 
 import Alchemy from './views/alchemy';
-import Apprentice from './models/apprentices.js';
 import Help from './views/help';
 import Industry from './views/industry';
 import Resources from './views/resources';
@@ -15,7 +16,7 @@ import Shop from './views/shop';
 
 require('./styles/style.css');
 
-window.debug = window.debug || {};      // debugging hackery
+window.debug = window.debug || { hax: true };      // debugging hackery
 
 class App extends React.Component {
   constructor() {
@@ -92,6 +93,7 @@ class App extends React.Component {
   render() {
     return (
       <div className='container-v'>
+        { window.debug.hax && <Debug/> }
         <Resources
           amAssigning = {this.state.amAssigning}
           assign_append = {this.assign_append.bind(this)}
