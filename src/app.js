@@ -1,10 +1,12 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
 
-import { SpinachGarden, IronMine, TinMine } from './models/industries';
+import bind_resources from './models/resources.js';
 import bind_items from './models/items';
+import bind_industries from './models/industries';
 import Apprentice from './models/apprentices.js';
 import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
+
 
 import { Counter, Button } from './views/lib';
 import Debug from './views/debug.js';
@@ -22,28 +24,20 @@ class App extends React.Component {
   constructor() {
     super();
     const fu = this.forceUpdate.bind(this);
-    this.RPOT = new RelentlessPassageOfTime(fu);
     this.state = {
-      resources: {
-        spinach: new Spinach(fu),
-        iron: new Iron(fu),
-        tin: new Tin(fu),
-        lead: new Lead(fu),
-        gold: new Gold(fu),
-      },
-      industries: {
-        spinachGarden: new SpinachGarden(this.RPOT, fu),
-        ironMine: new IronMine(this.RPOT, fu),
-        tinMine: new TinMine(this.RPOT, fu),
-      },
+      RPOT: new RelentlessPassageOfTime(fu),
+      resources: {},
       items: {},
+      industries: {},
       apprentices: [],
       maxGold: 0,
       amAssigning: false,
     };
     this.state.items = bind_items(fu, this.state);
-    this.state.resources.lead.setQuantity(10);
-    this.RPOT.run();
+    this.state.resources = bind_resources(fu, this.state);
+    this.state.industries = bind_industries(fu, this.state);
+    this.state.resources.lead.setQuantity(5);
+    this.state.RPOT.run();
 
     // debugging hackery
     window.globalState = this.state;
@@ -51,7 +45,7 @@ class App extends React.Component {
 
   @autobind
   hireApprentice() {
-    this.setState({apprentices: [...this.state.apprentices, new Apprentice(this.RPOT)]});
+    this.setState({apprentices: [...this.state.apprentices, new Apprentice(this.state.RPOT)]});
   }
 
   transmute(from, to) {
