@@ -9,7 +9,6 @@ import { Counter, Button } from './views/lib';
 import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
 
 import Alchemy from './views/alchemy';
-import Apprentice from './models/apprentices.js';
 import Help from './views/help';
 import Industry from './views/industry';
 import Resources from './views/resources';
