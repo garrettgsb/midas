@@ -2,12 +2,12 @@ import autobind from 'autobind-decorator';
 import React from 'react';
 
 import { SpinachGarden, IronMine, TinMine } from './models/industries';
-import _items from './models/items';
+import bind_items from './models/items';
 import Apprentice from './models/apprentices.js';
-import Debug from './views/debug.js';
-import { Counter, Button } from './views/lib';
 import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
 
+import { Counter, Button } from './views/lib';
+import Debug from './views/debug.js';
 import Alchemy from './views/alchemy';
 import Help from './views/help';
 import Industry from './views/industry';
@@ -41,7 +41,7 @@ class App extends React.Component {
       maxGold: 0,
       amAssigning: false,
     };
-    this.state.items = _items(fu, this.state);
+    this.state.items = bind_items(fu, this.state);
     this.state.resources.lead.setQuantity(10);
     this.RPOT.run();
 
@@ -100,7 +100,7 @@ class App extends React.Component {
           resources={this.state.resources}
           transmute = {this.transmute.bind(this)}
         />
-        <Shop items={this.state.items} />
+        <Shop items={Object.values(this.state.items)} />
         <Help
           apprentices={this.state.apprentices}
           onHire={this.hireApprentice}

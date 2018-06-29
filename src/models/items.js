@@ -3,7 +3,7 @@ export default (forceUpdate, globalState) => {
   class Item {
     constructor(config) {
       this.label = config.label || 'Unnamed Item';
-      this.name = config.name || config.label;
+      this.name = config.name || _.camelCase(this.label);
       this.description = config.description || 'A rare glimpse behind the curtain. Probably here by accident.';
       this.unlocked = config.unlocked || false;
       this.tier = 0;
@@ -32,7 +32,7 @@ export default (forceUpdate, globalState) => {
     }
   }
 
-  return [
+  var items_array = [
     new Item({
       label: 'Lead Catalyst', 
       description: 'Reduces the amount of lead required to produce gold',
@@ -50,5 +50,11 @@ export default (forceUpdate, globalState) => {
       },
     }),
   ];
+
+  var items_object = {};
+  for (var item of items_array) {
+    items_object[item.name] = item;
+  }
+  return items_object;
 
 }
