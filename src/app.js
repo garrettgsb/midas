@@ -41,7 +41,6 @@ class App extends React.Component {
       amAssigning: false,
     };
     this.state.items = _items(fu, this.state);
-    this.state.resources.lead.setQuantity(10);
     this.RPOT.run();
 
     // debugging hackery

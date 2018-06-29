@@ -7,7 +7,12 @@ class Resource {
     this.label = 'Unnamed Resource';
     this.transmutationTargets = {};
     this.findVolume = 1;
-    this.find = () => this.quantity += this.findVolume;
+    this.find = () => {
+      const oldQuantity = this.quantity;
+      this.quantity += this.findVolume;
+      this.produced += Math.max(this.quantity - oldQuantity, 0);
+      this.forceAppUpdate();
+    };
   }
 
   unlocked(state) {
@@ -46,13 +51,9 @@ class Spinach extends Resource {
     this.quantity = 0;
     this.verb = 'Pluck';
     this.transmutationTargets = {iron: 3};
-    this.find = () => {
-      this.quantity += this.findVolume;
-      this.forceAppUpdate();
-    };
   }
   unlocked(state) {
-    return state.maxGold >= 10;
+    return state.resources.iron.produced >= 5;
   }
 }
 
@@ -64,13 +65,9 @@ class Iron extends Resource {
     this.quantity = 0;
     this.verb = 'Scrounge';
     this.transmutationTargets = {lead: 2};
-    this.find = () => {
-      this.quantity += this.findVolume;
-      this.forceAppUpdate();
-    };
   }
   unlocked(state) {
-    return state.resources.lead.produced >= 12;
+    return state.resources.lead.produced >= 50;
   }
 }
 
@@ -82,10 +79,6 @@ class Tin extends Resource {
     this.quantity = 0;
     this.verb = 'Scrounge';
     this.transmutationTargets = {iron: 4, lead: 10};
-    this.find = () => {
-      this.quantity += this.findVolume;
-      this.forceAppUpdate();
-    };
   }
 
   unlocked(state) {
@@ -101,12 +94,6 @@ class Lead extends Resource {
     this.quantity = 0;
     this.verb = 'Scrounge';
     this.transmutationTargets = {gold: 10};
-    this.find = () => {
-      const oldQuantity = this.quantity;
-      this.quantity += this.findVolume;
-      this.produced += Math.max(this.quantity - oldQuantity, 0);
-      this.forceAppUpdate();
-    };
   }
 
   unlocked(state) {

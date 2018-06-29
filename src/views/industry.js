@@ -9,7 +9,7 @@ export default class Industries extends React.Component {
   }
 
   get unlocked() {
-    return this.maxGold > 5;
+    return this.maxGold >= 5;
   }
 
   render() {
