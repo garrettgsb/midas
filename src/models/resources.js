@@ -5,10 +5,18 @@ class Resource {
     this.produced = 0; // Amount produced ever, i.e. ignoring spent
     this.name = 'unnamed resource';
     this.label = 'Unnamed Resource';
-    this.unlocked = false;
     this.transmutationTargets = {};
     this.findVolume = 1;
-    this.find = () => this.quantity += this.findVolume;
+    this.find = () => {
+      const oldQuantity = this.quantity;
+      this.quantity += this.findVolume;
+      this.produced += Math.max(this.quantity - oldQuantity, 0);
+      this.forceAppUpdate();
+    };
+  }
+
+  unlocked(state) {
+    return false;
   }
 
   setQuantity(q) {
@@ -17,7 +25,7 @@ class Resource {
 
   incrementBy(q) {
     this.quantity += q;
-    this.produced += q;
+    this.produced += Math.max(q, 0);
   }
 
   canTransmuteTo(target) {
@@ -41,13 +49,11 @@ class Spinach extends Resource {
     this.label = 'Spinach';
     this.name = 'spinach';
     this.quantity = 0;
-    this.unlocked = true;
     this.verb = 'Pluck';
     this.transmutationTargets = {iron: 3};
-    this.find = () => {
-      this.quantity += this.findVolume;
-      this.forceAppUpdate();
-    };
+  }
+  unlocked(state) {
+    return state.resources.iron.produced >= 5;
   }
 }
 
@@ -57,13 +63,11 @@ class Iron extends Resource {
     this.label = 'Iron';
     this.name = 'iron';
     this.quantity = 0;
-    this.unlocked = true;
     this.verb = 'Scrounge';
     this.transmutationTargets = {lead: 2};
-    this.find = () => {
-      this.quantity += this.findVolume;
-      this.forceAppUpdate();
-    };
+  }
+  unlocked(state) {
+    return state.resources.lead.produced >= 50;
   }
 }
 
@@ -73,13 +77,12 @@ class Tin extends Resource {
     this.label = 'Tin';
     this.name = 'tin';
     this.quantity = 0;
-    this.unlocked = true;
     this.verb = 'Scrounge';
     this.transmutationTargets = {iron: 4, lead: 10};
-    this.find = () => {
-      this.quantity += this.findVolume;
-      this.forceAppUpdate();
-    };
+  }
+
+  unlocked(state) {
+    return state.resources.gold.produced >= 10;
   }
 }
 
@@ -89,13 +92,12 @@ class Lead extends Resource {
     this.label = 'Lead';
     this.name = 'lead';
     this.quantity = 0;
-    this.unlocked = true;
     this.verb = 'Scrounge';
     this.transmutationTargets = {gold: 10};
-    this.find = () => {
-      this.quantity += this.findVolume;
-      this.forceAppUpdate();
-    };
+  }
+
+  unlocked(state) {
+    return true;
   }
 }
 
@@ -105,10 +107,13 @@ class Gold extends Resource {
     this.label = 'Gold';
     this.name = 'gold';
     this.quantity = 0;
-    this.unlocked = true;
     this.verb = '💥';
     this.transmutationTargets = [];
     this.find = null;
+  }
+
+  unlocked(state) {
+    return state.resources.lead.produced >= 10;
   }
 }
 

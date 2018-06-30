@@ -42,7 +42,6 @@ class App extends React.Component {
       amAssigning: false,
     };
     this.state.items = _items(fu, this.state);
-    this.state.resources.lead.setQuantity(10);
     this.RPOT.run();
 
     // debugging hackery
@@ -96,23 +95,26 @@ class App extends React.Component {
         { window.debug.hax && <Debug/> }
         <Resources
           amAssigning = {this.state.amAssigning}
+          appState = {this.state}
           assign_append = {this.assign_append.bind(this)}
           resources={this.state.resources}
           transmute = {this.transmute.bind(this)}
         />
-        <Shop items={this.state.items} />
+        <Shop appState = {this.state} items={this.state.items} />
         <Help
+          appState = {this.state}
           apprentices={this.state.apprentices}
           onHire={this.hireApprentice}
           onAssign={this.assign_toggle}
           currentAssignee={this.state.amAssigning.id}
         />
         <Industry
+          appState = {this.state}
           industries={this.state.industries}
           resources={this.state.resources}
           assigning={this.state.amAssigning ? this.assign_append : undefined}
         />
-        <Alchemy />
+        <Alchemy appState = {this.state} />
       </div>
     );
   };
