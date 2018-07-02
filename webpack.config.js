@@ -38,7 +38,6 @@ const config = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      //$: 'jquery',
       _: 'lodash',
     })
   ]
