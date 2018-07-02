@@ -6,15 +6,18 @@ const Resources = ({resources, transmute, amAssigning, assign_append}) => {
     <div className='container-v'>
       <h1>Resources</h1>
       <div className='container'>
-        {Object.values(resources).map(resource => {
-          return <ResourcePanel
-            key={resource.name}
-            resource={resource}
-            resources={resources}
-            transmute={transmute}
-            assigning={amAssigning ? assign_append : undefined}
-          />
-        })}
+        {Object.values(resources)
+          .filter(resource => resource.unlocked)
+          .map(resource => {
+            return <ResourcePanel
+              key={resource.name}
+              resource={resource}
+              resources={resources}
+              transmute={transmute}
+              assigning={amAssigning ? assign_append : undefined}
+            />
+          })
+        }
       </div>
     </div>
   );
