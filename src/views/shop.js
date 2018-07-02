@@ -3,13 +3,18 @@ import { Button, Counter } from './lib';
 
 export default class Shop extends React.Component {
   render() {
+    if (! _.some(this.props.items.map(item => item.unlocked))) {
+      return null;
+    }
     return (
       <div className='container-v'>
         <h1>Shop</h1>
         <div className='container shop'>
-          {this.props.items.map(item => {
-            return (<ShopItem key={item.name} item={item} />);
-          })}
+          {this.props.items
+            .filter(item => item.unlocked)
+            .map(item => {
+              return (<ShopItem key={item.name} item={item} />);
+            })}
         </div>
       </div>
     );
