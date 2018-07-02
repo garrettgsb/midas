@@ -5,11 +5,10 @@ export default (forceUpdate, globalState) => {
       this.label = config.label || 'Unnamed Item';
       this.name = config.name || _.camelCase(this.label);
       this.description = config.description || 'A rare glimpse behind the curtain. Probably here by accident.';
-      this.unlocked = config.unlocked || false;
+      this._unlocked = config.unlocked || (() => true);
       this.tier = 0;
       this._price = config.price || (tier => ({gold: 666}));
-      this.buyAction = config.buyAction || 
-        function(tier) { console.log(`You purchased ${this.label} at tier ${this.tier}, good job!`);};
+      this.buyAction = config.buyAction;
     }
 
     get canAfford() {
@@ -20,11 +19,15 @@ export default (forceUpdate, globalState) => {
       return this._price(this.tier);
     }
 
+    get unlocked() {
+      return globalState.resources.gold.produced >= this._price(0).gold;
+    }
+
     buy() {
       if (this.canAfford) {
         globalState.resources.gold.quantity -= this.price.gold;
         this.tier += 1;
-        this.buyAction();
+        if (this.buyAction) this.buyAction();
         forceUpdate();
         return true;
       }
@@ -37,17 +40,11 @@ export default (forceUpdate, globalState) => {
       label: 'Lead Catalyst', 
       description: 'Reduces the amount of lead required to produce gold',
       price: (tier => ({gold: [3, 9, 81, 6561, 43046721][tier]})),
-      buyAction: function(tier) {
-        globalState.resources.lead.transmutationTargets.gold -= 1;
-      },
     }),
     new Item({
       label: 'Metal Detector', 
       description: 'Find more lead each time you search',
       price: (tier => ({gold: 5**tier})),
-      buyAction: function(tier) {
-        globalState.resources.lead.findVolume += 1;
-      },
     }),
   ];
 

@@ -3,18 +3,15 @@ import React from 'react';
 
 import bind_resources from './models/resources.js';
 import bind_items from './models/items';
-import bind_industries from './models/industries';
 import Apprentice from './models/apprentices.js';
-import { Spinach, Iron, Tin, Lead, Gold } from './models/resources.js';
+import bind_industries from './models/industries';
 
-
-import { Counter, Button } from './views/lib';
 import Debug from './views/debug.js';
-import Alchemy from './views/alchemy';
-import Help from './views/help';
-import Industry from './views/industry';
 import Resources from './views/resources';
 import Shop from './views/shop';
+import Help from './views/help';
+import Industry from './views/industry';
+import Alchemy from './views/alchemy';
 
 require('./styles/style.css');
 
@@ -36,7 +33,7 @@ class App extends React.Component {
     this.state.items = bind_items(fu, this.state);
     this.state.resources = bind_resources(fu, this.state);
     this.state.industries = bind_industries(fu, this.state);
-    this.state.resources.lead.setQuantity(5);
+    this.state.resources.lead.quantity = 5;
     this.state.RPOT.run();
 
     // debugging hackery
@@ -50,7 +47,7 @@ class App extends React.Component {
 
   transmute(from, to) {
     if (from.transmute(to)) {
-      to.incrementBy(1);
+      to.quantity += 1;
     }
   }
 
@@ -94,7 +91,9 @@ class App extends React.Component {
           resources={this.state.resources}
           transmute = {this.transmute.bind(this)}
         />
-        <Shop items={Object.values(this.state.items)} />
+        <Shop
+          items={Object.values(this.state.items)}
+        />
         <Help
           apprentices={this.state.apprentices}
           onHire={this.hireApprentice}

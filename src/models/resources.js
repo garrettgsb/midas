@@ -2,23 +2,43 @@ export default (forceUpdate, globalState) => {
 
   class Resource {
     constructor() {
-      this.quantity = 0; // Current quantity
-      this.produced = 0; // Amount produced ever, i.e. ignoring spent
+      this._produced = 0;
+      this._consumed = 0;
       this.name = 'unnamed resource';
       this.label = 'Unnamed Resource';
-      this.unlocked = false;
-      this.transmutationTargets = {};
-      this.findVolume = 1;
-      this.find = () => this.quantity += this.findVolume;
+      this.find = () => {
+        this.quantity += this.findVolume;
+        forceUpdate();
+      }
     }
 
-    setQuantity(q) {
-      this.quantity = q;
+    get quantity() {
+      return this._produced - this._consumed;
     }
 
-    incrementBy(q) {
-      this.quantity += q;
-      this.produced += q;
+    set quantity(val) {
+      const delta = val - this.quantity;
+      if (delta < 0) {
+        this._consumed += -delta;
+      } else {
+        this._produced += delta;
+      }
+    }
+
+    get produced() {
+      return this._produced;
+    }
+
+    get unlocked() {
+      return true;
+    }
+
+    get findVolume() {
+      return 1;
+    }
+
+    get transmutationTargets() {
+      return {};
     }
 
     canTransmuteTo(target) {
@@ -28,7 +48,7 @@ export default (forceUpdate, globalState) => {
 
     transmute(target) {
       if (this.canTransmuteTo(target)) {
-        this.incrementBy(-1 * this.transmutationTargets[target.name]);
+        this.quantity -= this.transmutationTargets[target.name];
         forceUpdate();
         return true;
       }
@@ -41,14 +61,15 @@ export default (forceUpdate, globalState) => {
       super()
       this.label = 'Spinach';
       this.name = 'spinach';
-      this.quantity = 0;
-      this.unlocked = true;
       this.verb = 'Pluck';
-      this.transmutationTargets = {iron: 3};
-      this.find = () => {
-        this.quantity += this.findVolume;
-        forceUpdate();
-      };
+    }
+
+    get unlocked() {
+      return globalState.resources.gold.produced >= 3;
+    }
+
+    get transmutationTargets() {
+      return {iron: 3};
     }
   }
 
@@ -57,14 +78,15 @@ export default (forceUpdate, globalState) => {
       super()
       this.label = 'Iron';
       this.name = 'iron';
-      this.quantity = 0;
-      this.unlocked = true;
       this.verb = 'Scrounge';
-      this.transmutationTargets = {lead: 2};
-      this.find = () => {
-        this.quantity += this.findVolume;
-        forceUpdate();
-      };
+    }
+
+    get unlocked() {
+      return globalState.resources.gold.produced >= 3;
+    }
+
+    get transmutationTargets() {
+      return {lead: 2};
     }
   }
 
@@ -73,14 +95,15 @@ export default (forceUpdate, globalState) => {
       super()
       this.label = 'Tin';
       this.name = 'tin';
-      this.quantity = 0;
-      this.unlocked = true;
       this.verb = 'Scrounge';
-      this.transmutationTargets = {iron: 4, lead: 10};
-      this.find = () => {
-        this.quantity += this.findVolume;
-        forceUpdate();
-      };
+    }
+
+    get unlocked() {
+      return globalState.resources.gold.produced >= 3;
+    }
+
+    get transmutationTargets() {
+      return {iron: 4, lead: 10};
     }
   }
 
@@ -89,13 +112,20 @@ export default (forceUpdate, globalState) => {
       super()
       this.label = 'Lead';
       this.name = 'lead';
-      this.quantity = 0;
-      this.unlocked = true;
       this.verb = 'Scrounge';
-      this.transmutationTargets = {gold: 10};
-      this.find = () => {
-        this.quantity += this.findVolume;
-        forceUpdate();
+    }
+
+    get findVolume() {
+      return 1 + globalState.items.metalDetector.tier;
+    }
+
+    get unlocked() {
+      return true;
+    }
+
+    get transmutationTargets() {
+      return {
+        gold: 10 - globalState.items.leadCatalyst.tier,
       };
     }
   }
@@ -105,11 +135,12 @@ export default (forceUpdate, globalState) => {
       super()
       this.label = 'Gold';
       this.name = 'gold';
-      this.quantity = 0;
-      this.unlocked = true;
       this.verb = '💥';
-      this.transmutationTargets = [];
       this.find = null;
+    }
+
+    get unlocked() {
+      return this.produced > 0;
     }
   }
 

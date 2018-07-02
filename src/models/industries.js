@@ -31,7 +31,7 @@ export default (forceUpdate, globalState) => {
     }
 
     collect(resource) {
-      resource.incrementBy(this.quantity);
+      resource.quantity += this.quantity;
       this.quantity = 0;
       forceUpdate();
     }
