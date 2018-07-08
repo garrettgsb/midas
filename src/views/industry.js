@@ -33,15 +33,17 @@ class MinePanel extends React.Component {
     const resources = this.props.resources;
     if (model.state.purchased) {
       return (
-        <div className='panel container'>
-          <div className='container-v'>
-            <p>Resevoir: {model.resevoir}</p>
-            <p>Mined: {model.state.quantity}</p>
-            <Button label="Mine" onClick={model.mine}/>
-            <Button label="Prospect" onClick={model.prospect}/>
-          </div>
-          <div className='container-v'>
-            <FillBar quantity={model.resevoir} max={model.state.resevoirSize}/>
+        <div className='panel'>
+          <div className='container'>
+            <div className='container-v'>
+              <p>Resevoir: {model.resevoir}</p>
+              <p>Mined: {model.state.quantity}</p>
+              <Button label="Mine" onClick={model.mine}/>
+              <Button label="Prospect" onClick={model.prospect}/>
+            </div>
+            <div className='container-v'>
+              <FillBar quantity={model.resevoir} max={model.state.resevoirSize}/>
+            </div>
           </div>
         </div>
       );

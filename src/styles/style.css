@@ -34,12 +34,11 @@ select   {
 }
 
 .container {
-  border: 1px solid sienna;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin: 10px;
-  padding: 10px;
+  margin: 2px;
+  padding: 2px;
 }
 
 .container-v {
@@ -59,8 +58,8 @@ select   {
   background-color: aliceblue;
   border: 1px solid cornflowerblue;
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+  flex-direction: column;
+  justify-content: center;
   margin: 3px;
   padding: 5px 10px;
 }
