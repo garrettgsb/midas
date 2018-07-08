@@ -66,11 +66,11 @@ export default (forceUpdate, globalState) => {
   }
 
   class Mine extends Industry {
-    constructor() {
+    constructor(config) {
       super();
-      this.label = 'Unnamed Mine';
-      this.name = 'unnamedMine';
-      this.resource = 'silver';
+      this.label = config.label || 'Unnamed Mine';
+      this.name = config.name || 'unnamedMine';
+      this.resource = config.resource || 'empty space';
       this.type = 'mine';
 
       // I think the idea here is that any data that might be procedurally generated
@@ -131,38 +131,24 @@ export default (forceUpdate, globalState) => {
     }
   }
 
-  class SilverMine extends Mine {
-    constructor() {
-      super();
-      this.label = 'Silver Mine';
-      this.name = 'silverMine';
-      this.resource = 'silver';
-    }
-  }
-
-  class IronMine extends Mine {
-    constructor() {
-      super();
-      this.name = 'ironMine';
-      this.label = 'Iron Mine';
-      this.resource = 'iron';
-    }
-  }
-
-  class TinMine extends Mine {
-    constructor() {
-      super();
-      this.name = 'tinMine';
-      this.label = 'Tin Mine';
-      this.resource = 'tin';
-    }
-  }
-
   var industries_array = [
     new SpinachGarden(),
-    new SilverMine(),
-    new IronMine(),
-    new TinMine(),
+
+    new Mine({
+      name: 'Silver Mine',
+      label: 'silverMine',
+      resource: 'silver',
+    }),
+    new Mine({
+      name: 'Iron Mine',
+      label: 'ironMine',
+      resource: 'iron',
+    }),
+    new Mine({
+      name: 'Tin Mine',
+      label: 'tinMine',
+      resource: 'tin',
+    }),
   ];
 
   var industries_object = {};
