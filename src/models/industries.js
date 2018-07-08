@@ -25,7 +25,7 @@ export default (forceUpdate, globalState) => {
     }
 
     tickAction() {
-      if (this.quantity < this.maxQuantity) this.quantity += 1;
+      return false; // Nothing happens on tick by default
     }
 
     @autobind
@@ -79,7 +79,7 @@ export default (forceUpdate, globalState) => {
       this.state = {
         costToBuild: 10,
         costToProspect: 10,
-        depletionPenalty: 8,
+        depletionPenalty: 3,
         purchased: true,
         quantity: 0,
         resevoirSize: 10,
@@ -92,8 +92,6 @@ export default (forceUpdate, globalState) => {
       return Math.max(this.state.resevoirSize - this.state.resevoirUsed, 0);
     }
 
-    tickAction() { return false; }
-
     @autobind
     mine() {
       let actualYield;
@@ -104,7 +102,6 @@ export default (forceUpdate, globalState) => {
       } else {
         actualYield = Math.max(this._yield() - this.state.depletionPenalty, 0);
       }
-
       this.state.quantity += actualYield;
       forceUpdate();
     }
@@ -128,7 +125,7 @@ export default (forceUpdate, globalState) => {
     _yield() {
       const [min, max] = this.state.yieldRange;
       const normalYield = Math.floor(Math.random() * (max - min)) + min;
-      if (this.state.resevoir > 0) return normalYield;
+      if (this.resevoir > 0) return normalYield;
       const depletedYield = normalYield - this.state.depletionPenalty;
       return depletedYield > 0 ? depletedYield : 0;
     }

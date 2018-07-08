@@ -18,7 +18,8 @@ export default class Industries extends React.Component {
             // what to render, or the model itself holds a component, which it renders.
             if (model[1].type === 'mine') {
               return <MinePanel key={model[1].name} resources={this.resources} model={model[1]} assigning={this.props.assigning}/>;
-            } // Else farm, mill...
+            }
+            return null; // Later: farm, mill...
           })}
         </div>
       </div>
