@@ -96,12 +96,9 @@ export default (forceUpdate, globalState) => {
     mine() {
       let actualYield;
 
-      if (this.resevoir > 0) {
-        actualYield = this._yield();
-        this.state.resevoirUsed += 1;
-      } else {
-        actualYield = Math.max(this._yield() - this.state.depletionPenalty, 0);
-      }
+      if (this.resevoir > 0) this.state.resevoirUsed += 1;
+
+      actualYield = this._yield();
       this.state.quantity += actualYield;
       forceUpdate();
     }
