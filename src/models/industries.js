@@ -17,10 +17,14 @@ export default (forceUpdate, globalState) => {
     tick(now) {
       if (now > this.lastTick + this.tickLength) {
         this.lastTick = now;
-        if (this.quantity < this.maxQuantity) this.quantity += 1;
+        this.tickAction();
         return true;
       }
       return false;
+    }
+
+    tickAction() {
+      if (this.quantity < this.maxQuantity) this.quantity += 1;
     }
 
     build(gold) {
@@ -52,6 +56,63 @@ export default (forceUpdate, globalState) => {
       this.label = 'Spinach Garden';
       this.targetResource = 'spinach';
     }
+
+    tickAction() {
+      if (this.quantity < this.maxQuantity) this.quantity += 1;
+    }
+  }
+
+  class SilverMine extends Industry {
+    constructor() {
+      super();
+      this.label = 'Silver Mine';
+      this.name = 'silverMine';
+      this.resource = 'silver';
+
+      // I think the idea here is that any data that might be procedurally generated
+      // or procedurally manipulated in the course of the game should go in state.
+      // Maybe "gameState" would be a better name, but we'll stick with this for now.
+      this.state = {
+        costToBuild: 10,
+        costToProspect: 10,
+        depletionPenalty: 8,
+        purchased: true,
+        quantity: 0,
+        resevoir: 100,
+        yieldRange: [1, 5], // Range of how much you find per go
+      };
+    }
+
+    tickAction() { return false }
+
+    mine() {
+      this.state.quantity += this._yield();
+      this.state.resevoir -= 1;
+      forceUpdate();
+    }
+
+    prospect() {
+      // If you have the thalers, expand the resevoir by some random amount.
+      if (this.canProspect) {
+        this.state.resevoir += 100 // TODO: Different plan for figuring out how much to prospect
+      }
+    }
+
+    canAfford(thalers=Infinity) {
+      return thalers < this.state.costToBuild;
+    }
+
+    canProspect(thalers=Infinity) {
+      return thalers < this.state.costToProspect;
+    }
+
+    _yield() {
+      const [min, max] = this.state.yieldRange;
+      const normalYield = Math.floor(Math.random() * (max - min)) + min;
+      if (this.state.resevoir > 0) return normalYield;
+      const depletedYield = normalYield - this.state.depletionPenalty
+      return depletedYield > 0 ? depletedYield : 0
+    }
   }
 
   class IronMine extends Industry {
@@ -74,6 +135,7 @@ export default (forceUpdate, globalState) => {
 
   var industries_array = [
     new SpinachGarden(),
+    new SilverMine(),
     new IronMine(),
     new TinMine(),
   ];
@@ -88,4 +150,3 @@ export default (forceUpdate, globalState) => {
 
 
 }
-
