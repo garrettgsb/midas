@@ -78,7 +78,9 @@ class App extends React.Component {
 
   componentWillUpdate() {
     const [current, max] = [this.state.resources.gold.quantity, this.state.maxGold];
-    this.setState({ maxGold: Math.max(current, max) });
+    if (Math.max(current, max) !== this.state.maxGold) {
+      this.setState({ maxGold: Math.max(current, max) });
+    }
   }
 
   render() {

@@ -1,3 +1,4 @@
+import autobind from 'autobind-decorator';
 export default (forceUpdate, globalState) => {
 
   class Industry {
@@ -27,6 +28,7 @@ export default (forceUpdate, globalState) => {
       if (this.quantity < this.maxQuantity) this.quantity += 1;
     }
 
+    @autobind
     build(gold) {
       this.maxQuantity += this.incrementMaxBy;
       gold.quantity -= this.costToBuild;
@@ -34,6 +36,7 @@ export default (forceUpdate, globalState) => {
       forceUpdate();
     }
 
+    @autobind
     collect(resource) {
       resource.quantity += this.quantity;
       this.quantity = 0;
@@ -41,7 +44,7 @@ export default (forceUpdate, globalState) => {
     }
 
     canAfford(gold) {
-      return gold < this.costToBuild
+      return gold < this.costToBuild;
     }
 
     increaseBuildCost() {
@@ -62,12 +65,13 @@ export default (forceUpdate, globalState) => {
     }
   }
 
-  class SilverMine extends Industry {
+  class Mine extends Industry {
     constructor() {
       super();
-      this.label = 'Silver Mine';
-      this.name = 'silverMine';
+      this.label = 'Unnamed Mine';
+      this.name = 'unnamedMine';
       this.resource = 'silver';
+      this.type = 'mine';
 
       // I think the idea here is that any data that might be procedurally generated
       // or procedurally manipulated in the course of the game should go in state.
@@ -78,23 +82,38 @@ export default (forceUpdate, globalState) => {
         depletionPenalty: 8,
         purchased: true,
         quantity: 0,
-        resevoir: 100,
+        resevoirSize: 10,
+        resevoirUsed: 0,
         yieldRange: [1, 5], // Range of how much you find per go
       };
     }
 
-    tickAction() { return false }
+    get resevoir() {
+      return Math.max(this.state.resevoirSize - this.state.resevoirUsed, 0);
+    }
 
+    tickAction() { return false; }
+
+    @autobind
     mine() {
-      this.state.quantity += this._yield();
-      this.state.resevoir -= 1;
+      let actualYield;
+
+      if (this.resevoir > 0) {
+        actualYield = this._yield();
+        this.state.resevoirUsed += 1;
+      } else {
+        actualYield = Math.max(this._yield() - this.state.depletionPenalty, 0);
+      }
+
+      this.state.quantity += actualYield;
       forceUpdate();
     }
 
+    @autobind
     prospect() {
       // If you have the thalers, expand the resevoir by some random amount.
       if (this.canProspect) {
-        this.state.resevoir += 100 // TODO: Different plan for figuring out how much to prospect
+        this.state.resevoirSize += 100; // TODO: Different plan for figuring out how much to prospect
       }
     }
 
@@ -110,26 +129,35 @@ export default (forceUpdate, globalState) => {
       const [min, max] = this.state.yieldRange;
       const normalYield = Math.floor(Math.random() * (max - min)) + min;
       if (this.state.resevoir > 0) return normalYield;
-      const depletedYield = normalYield - this.state.depletionPenalty
-      return depletedYield > 0 ? depletedYield : 0
+      const depletedYield = normalYield - this.state.depletionPenalty;
+      return depletedYield > 0 ? depletedYield : 0;
     }
   }
 
-  class IronMine extends Industry {
+  class SilverMine extends Mine {
+    constructor() {
+      super();
+      this.label = 'Silver Mine';
+      this.name = 'silverMine';
+      this.resource = 'silver';
+    }
+  }
+
+  class IronMine extends Mine {
     constructor() {
       super();
       this.name = 'ironMine';
       this.label = 'Iron Mine';
-      this.targetResource = 'iron';
+      this.resource = 'iron';
     }
   }
 
-  class TinMine extends Industry {
+  class TinMine extends Mine {
     constructor() {
       super();
       this.name = 'tinMine';
       this.label = 'Tin Mine';
-      this.targetResource = 'tin';
+      this.resource = 'tin';
     }
   }
 
@@ -145,8 +173,4 @@ export default (forceUpdate, globalState) => {
     industries_object[item.name] = item;
   }
   return industries_object;
-
-
-
-
-}
+};
