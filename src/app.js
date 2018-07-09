@@ -93,6 +93,11 @@ class App extends React.Component {
           resources={this.state.resources}
           transmute={this.transmute}
         />
+        <Industry
+          industries={this.state.industries}
+          resources={this.state.resources}
+          assigning={this.state.amAssigning ? this.assign_append : undefined}
+        />
         <Shop
           items={Object.values(this.state.items)}
         />
@@ -101,11 +106,6 @@ class App extends React.Component {
           onHire={this.hireApprentice}
           onAssign={this.assign_toggle}
           currentAssignee={this.state.amAssigning.id}
-        />
-        <Industry
-          industries={this.state.industries}
-          resources={this.state.resources}
-          assigning={this.state.amAssigning ? this.assign_append : undefined}
         />
         <Alchemy />
       </div>
