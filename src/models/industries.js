@@ -3,13 +3,15 @@ export default (forceUpdate, globalState) => {
 
   class Industry {
     constructor() {
+      // TODO: need a config parameter to make subsequent instances more expensive
+
       this.label = 'Unnamed Industry';
       this.name = 'unnamedIndustry';
-      this.targetResource = 'untargeted industry';
-      this.costToBuild = 10;
-      this.maxQuantity = 0;
-      this.incrementMaxBy = 10;
-      this.quantity = 0;
+      this.type = undefined;      // probably type-less Industries should have no View
+      this.tier = 0;
+      this._produced = {};
+      this.key = Math.random().toString().substring();
+
       this.lastTick = 0;
       this.tickLength = 1000;
       globalState.RPOT.subscribe(this);
@@ -28,129 +30,166 @@ export default (forceUpdate, globalState) => {
       return false; // Nothing happens on tick by default
     }
 
-    @autobind
-    build(gold) {
-      this.maxQuantity += this.incrementMaxBy;
-      gold.quantity -= this.costToBuild;
-      this.increaseBuildCost();
-      forceUpdate();
+    get visible() {
+      return false;
+    }
+
+    get canUpgrade() {
+      return globalState.resources.thaler.quantity >= this.upgradeCost;
     }
 
     @autobind
-    collect(resource) {
-      resource.quantity += this.quantity;
-      this.quantity = 0;
-      forceUpdate();
+    upgrade() {
+      if (this.canUpgrade) {
+        globalState.resources.thaler.quantity -= this.upgradeCost;
+        this.tier += 1;
+        forceUpdate();
+      }
     }
 
-    canAfford(gold) {
-      return gold < this.costToBuild;
+    get upgradeCost() {
+      // TODO: later figure out how to make the first purchase ever cost 1 gold instead of X thalers
+      // TODO: Maybe all costs should be objects, mapping resources to quantities.
+      //            So instead of `3` meaning "3 thalers", we'd say `{thalers: 3}`
+      if (this.tier === 0) {
+        return 1;       // TODO: change this to a larger number; it's currently small to make testing easier
+      }
+      return 2 ** (this.tier-1);
     }
 
-    increaseBuildCost() {
-      this.costToBuild = this.costToBuild ** 2;
-    }
+
   }
 
-  class SpinachGarden extends Industry {
-    constructor() {
-      super();
-      this.name = 'spinachGarden';
-      this.label = 'Spinach Garden';
-      this.targetResource = 'spinach';
-    }
+//  // This is commented out because it's obsolete, but demonstrates how an industry might use ticks/timeloop
+//  class SpinachGarden extends Industry {
+//    constructor() {
+//      super();
+//      this.name = 'spinachGarden';
+//      this.label = 'Spinach Garden';
+//      this.targetResource = 'spinach';
+//    }
+//
+//    tickAction() {
+//      if (this.quantity < this.maxQuantity) this.quantity += 1;
+//    }
+//  }
 
-    tickAction() {
-      if (this.quantity < this.maxQuantity) this.quantity += 1;
-    }
-  }
+
 
   class Mine extends Industry {
     constructor(config) {
       super();
-      this.label = config.label || 'Unnamed Mine';
-      this.name = config.name || 'unnamedMine';
-      this.resource = config.resource || 'empty space';
+      this.label = 'Mine';
+      this.name = 'mine';
       this.type = 'mine';
+      this._reservoirSize = 10;
+      this._reservoirUsed = 0;
+      this._target = undefined;
+
 
       // I think the idea here is that any data that might be procedurally generated
       // or procedurally manipulated in the course of the game should go in state.
       // Maybe "gameState" would be a better name, but we'll stick with this for now.
+      //
+      // NOTE: I (jh) think all three of these should be somewhere else, dunno.
       this.state = {
-        costToBuild: 10,
-        costToProspect: 10,
+        costToProspect: 1,
         depletionPenalty: 3,
-        purchased: true,
-        quantity: 0,
-        resevoirSize: 10,
-        resevoirUsed: 0,
-        yieldRange: [1, 5], // Range of how much you find per go
+        yieldRange: [3, 5],
       };
     }
 
-    get resevoir() {
-      return Math.max(this.state.resevoirSize - this.state.resevoirUsed, 0);
+    get visible() {
+      return true;
+    }
+
+    get possibleTargets() {
+      return Mine.activities;
+    }
+
+    get target() {
+      return this._target;
+    }
+
+    set target(target) {      // takes a proper target, OR a target's name
+      let targetName = (new Object(target)).name || target;
+      this._target = Mine.activities.find(act => act.name === targetName);
+      forceUpdate();
+    }
+
+    get reservoir() {
+      return Math.max(this._reservoirSize - this._reservoirUsed, 0);
     }
 
     @autobind
     mine() {
-      let actualYield;
+      if (!this.target) {
+        console.warn("Mine.mine was invoked, but we have no target");
+        return;   // no target?  no mining!
+      }
 
-      if (this.resevoir > 0) this.state.resevoirUsed += 1;
+      // TODO: does tier affect this?
+      let _yield = this._yield;
+      let _miningProb = this._miningProb;
+      let targetName = this.target.name;
 
-      actualYield = this._yield();
-      this.state.quantity += actualYield;
+      if (this.reservoir > 0) {
+        this._reservoirUsed += 1;
+      } else {
+        _miningProb /= 5;
+      }
+
+      if (Math.random() < _miningProb) {
+        this._produced[targetName] = (this._produced[targetName] || 0) + _yield;
+        globalState.resources[targetName].quantity += _yield;
+        // TODO: we talked about having some chance of other minerals
+      } else {
+        // do we do anything when there's no mineral yield?
+      }
       forceUpdate();
+    }
+
+    get canProspect() {
+      // TODO: I don't think this is right.
+      return globalState.resources.thaler.quantity >= this.state.costToProspect;
     }
 
     @autobind
     prospect() {
-      // If you have the thalers, expand the resevoir by some random amount.
+      // If you have the thalers, expand the reservoir by some random amount.
       if (this.canProspect) {
-        this.state.resevoirSize += 100; // TODO: Different plan for figuring out how much to prospect
+        this._reservoirSize += 100; // TODO: Different plan for figuring out how much to prospect
+        globalState.resources.thaler.quantity -= this.state.costToProspect;
       }
     }
 
-    canAfford(thalers=Infinity) {
-      return thalers < this.state.costToBuild;
-    }
-
-    canProspect(thalers=Infinity) {
-      return thalers < this.state.costToProspect;
-    }
-
-    _yield() {
+    get _yield() {
+      // TODO: does tier affect this?  it should affect something!
       const [min, max] = this.state.yieldRange;
       const normalYield = Math.floor(Math.random() * (max - min)) + min;
-      if (this.resevoir > 0) return normalYield;
+      if (this.reservoir > 0) return normalYield;
       const depletedYield = normalYield - this.state.depletionPenalty;
       return depletedYield > 0 ? depletedYield : 0;
     }
+
+    get _miningProb() {
+      return 0.9;
+    }
   }
 
-  var industries_array = [
-    new SpinachGarden(),
+  Mine.activities = [
+    {name: 'iron', label: 'Iron', resource: 'iron'},
+    {name: 'tin', label: 'Tin', resource: 'tin'},
+    {name: 'spinach', label: 'Spinach', resource: 'spinach'},
+  ];
 
-    new Mine({
-      name: 'Silver Mine',
-      label: 'silverMine',
-      resource: 'silver',
-    }),
-    new Mine({
-      name: 'Iron Mine',
-      label: 'ironMine',
-      resource: 'iron',
-    }),
-    new Mine({
-      name: 'Tin Mine',
-      label: 'tinMine',
-      resource: 'tin',
-    }),
+  var industries_array = [
+    new Mine(),
   ];
 
   var industries_object = {};
   for (var item of industries_array) {
     industries_object[item.name] = item;
   }
-  return industries_object;
+  return industries_array;
 };
