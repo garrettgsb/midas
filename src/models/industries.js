@@ -31,7 +31,8 @@ export default (forceUpdate, globalState) => {
     }
 
     get visible() {
-      return false;
+      // If you subclass Industry, you'd better override this!
+      throw new Error("Not Implemented: get visible()");
     }
 
     get canUpgrade() {

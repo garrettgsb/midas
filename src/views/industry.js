@@ -23,7 +23,7 @@ export default class Industries extends React.Component {
             if (!model.visible) {
               return null;
             } else if (!model.tier) {
-              return <BuyIndustryButton key={model.key} model={model} name={model.name} enabled={model.canUpgrade} />;
+              return <UnboughtIndustryPanel key={model.key} model={model} name={model.name} enabled={model.canUpgrade} />;
             } else {
               // at this point it must be visible, and have a tier > 0
               const Helper = helperPanels[model.type];
@@ -60,7 +60,7 @@ class MinePanel extends React.Component {
             <div className='container-v'>
               Choose a resource, mortal:
               <select onChange={this.dropdownChange}>
-                <option key='sdfsdfsdfsdfsdfsd' value={undefined}>CHOOSE:</option>
+                <option key='arbitrary_nonsense_gjsdfkiwnbijdfksdugj' value={undefined}>CHOOSE:</option>
                 {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
               </select>
             </div>
@@ -93,7 +93,7 @@ class MinePanel extends React.Component {
   }
 }
 
-const BuyIndustryButton = ({model}) => {
+const UnboughtIndustryPanel = ({model}) => {
   return (
     <div className='panel'>
       <div>{model.label}</div>
