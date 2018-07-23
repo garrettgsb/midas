@@ -23,6 +23,7 @@ export default (forceUpdate, globalState) => {
       } else {
         this._produced += delta;
       }
+      forceUpdate();
     }
 
     get produced() {
@@ -144,12 +145,28 @@ export default (forceUpdate, globalState) => {
     }
   }
 
+  class Thaler extends Resource {
+    constructor() {
+      super()
+      this.label = 'thalers';
+      this.name = 'thaler';
+      this.quantity = 0;
+      this.verb = '💥';
+      this.find = null;
+    }
+
+    get unlocked() {
+      return true;
+    }
+  }
+
   var resources_array = [
     new Spinach(),
     new Iron(),
     new Tin(),
     new Lead(),
     new Gold(),
+    new Thaler(),
   ];
 
   var resources_object = {};

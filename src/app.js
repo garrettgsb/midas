@@ -34,6 +34,7 @@ class App extends React.Component {
     this.state.resources = bind_resources(fu, this.state);
     this.state.industries = bind_industries(fu, this.state);
     this.state.resources.lead.quantity = 5;
+    this.state.resources.thaler.quantity = 5;
     this.state.RPOT.run();
 
     // debugging hackery
