@@ -148,7 +148,7 @@ export default (forceUpdate, globalState) => {
   class Thaler extends Resource {
     constructor() {
       super()
-      this.label = 'thalers';
+      this.label = 'Thalers';
       this.name = 'thaler';
       this.quantity = 0;
       this.verb = '💥';

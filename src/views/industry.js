@@ -78,7 +78,7 @@ class MinePanel extends React.Component {
               <p>Reservoir: {model.reservoir}</p>
               <p>Mined: {quantityMined}</p>
               <Button label="Mine" onClick={model.mine} inactive={!model.target} />
-              <Button label="Prospect" onClick={model.prospect} inactive={!model.target} />
+              <Button label={`Prospect (${model.prospectCost} ð)`} onClick={model.prospect} inactive={!model.target} />
               <select onChange={this.dropdownChange}>
                 {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
               </select>

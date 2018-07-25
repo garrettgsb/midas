@@ -86,6 +86,7 @@ export default (forceUpdate, globalState) => {
       this._reservoirSize = 10;
       this._reservoirUsed = 0;
       this._target = undefined;
+      this.prospectCost = 1;
 
 
       // I think the idea here is that any data that might be procedurally generated
@@ -94,7 +95,6 @@ export default (forceUpdate, globalState) => {
       //
       // NOTE: I (jh) think all three of these should be somewhere else, dunno.
       this.state = {
-        costToProspect: 1,
         depletionPenalty: 3,
         yieldRange: [3, 5],
       };
@@ -152,7 +152,7 @@ export default (forceUpdate, globalState) => {
 
     get canProspect() {
       // TODO: I don't think this is right.
-      return globalState.resources.thaler.quantity >= this.state.costToProspect;
+      return globalState.resources.thaler.quantity >= this.prospectCost;
     }
 
     @autobind
@@ -160,7 +160,7 @@ export default (forceUpdate, globalState) => {
       // If you have the thalers, expand the reservoir by some random amount.
       if (this.canProspect) {
         this._reservoirSize += 100; // TODO: Different plan for figuring out how much to prospect
-        globalState.resources.thaler.quantity -= this.state.costToProspect;
+        globalState.resources.thaler.quantity -= this.prospectCost
       }
     }
 
