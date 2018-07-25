@@ -34,6 +34,7 @@ class App extends React.Component {
     this.state.resources = bind_resources(fu, this.state);
     this.state.industries = bind_industries(fu, this.state);
     this.state.resources.lead.quantity = 5;
+    this.state.resources.thaler.quantity = 5;
     this.state.RPOT.run();
 
     // debugging hackery
@@ -42,7 +43,7 @@ class App extends React.Component {
 
   @autobind
   hireApprentice() {
-    this.setState({apprentices: [...this.state.apprentices, new Apprentice(this.state.RPOT)]});
+    this.setState({ apprentices: [...this.state.apprentices, new Apprentice(this.state.RPOT)] });
   }
 
   transmute(from, to) {
@@ -56,13 +57,13 @@ class App extends React.Component {
     if (!this.state.amAssigning) {
       this.setState({
         amAssigning: appr,
-        pending_assignment: []
+        pending_assignment: [],
       });
     } else {
       this.assign_finish(appr, this.state.pending_assignment);
       this.setState({
         amAssigning: false,
-        pending_assignment: []
+        pending_assignment: [],
       });
     }
   }
@@ -73,12 +74,14 @@ class App extends React.Component {
 
   @autobind
   assign_append(fn) {
-    this.setState({pending_assignment: [...this.state.pending_assignment, fn]});
+    this.setState({ pending_assignment: [...this.state.pending_assignment, fn] });
   }
 
   componentWillUpdate() {
     const [current, max] = [this.state.resources.gold.quantity, this.state.maxGold];
-    this.state.maxGold =  Math.max(current, max);
+    if (Math.max(current, max) !== this.state.maxGold) {
+      this.setState({ maxGold: Math.max(current, max) });
+    }
   }
 
   render() {
@@ -86,10 +89,15 @@ class App extends React.Component {
       <div className='container-v'>
         { window.debug.hax && <Debug/> }
         <Resources
-          amAssigning = {this.state.amAssigning}
-          assign_append = {this.assign_append.bind(this)}
+          amAssigning={this.state.amAssigning}
+          assign_append={this.assign_append}
           resources={this.state.resources}
-          transmute = {this.transmute.bind(this)}
+          transmute={this.transmute}
+        />
+        <Industry
+          industries={this.state.industries}
+          resources={this.state.resources}
+          assigning={this.state.amAssigning ? this.assign_append : undefined}
         />
         <Shop
           items={Object.values(this.state.items)}
@@ -100,16 +108,11 @@ class App extends React.Component {
           onAssign={this.assign_toggle}
           currentAssignee={this.state.amAssigning.id}
         />
-        <Industry
-          industries={this.state.industries}
-          resources={this.state.resources}
-          assigning={this.state.amAssigning ? this.assign_append : undefined}
-        />
         <Alchemy />
       </div>
     );
-  };
-};
+  }
+}
 
 class RelentlessPassageOfTime {
     constructor(forceUpdate) {
