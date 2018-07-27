@@ -42,7 +42,7 @@ export default (forceUpdate, globalState) => {
         console.warn("tried to set target to " + targetName + ", but this instance doesn't have targets");
         return;
       }
-      this._target = this.possibleTargets.find(act => act.name === targetName);
+      this._target = this.possibleTargets.find(target => target.name === targetName);
       forceUpdate();
     }
 
@@ -97,6 +97,12 @@ export default (forceUpdate, globalState) => {
       this.label = 'Mill';
       this.name = 'mill';
       this.type = 'mill';
+
+
+      // Mills work by requiring the player to take a sequence of actions (currently button-presses).
+      // `this.step` records which action/phase/step is the next one to take; when these reach a threshold
+      //    (determined by the current resource target), we'll have some yield.
+
       this.step = 0;
     }
 

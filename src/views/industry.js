@@ -57,7 +57,7 @@ class MinePanel extends React.Component {
     if (!model.target) {
       return <TargetlessIndustryPanel model={model} dropdownChange={this.dropdownChange} /> ;
     } else {
-      if (model.target && model.target.name && model._produced[model.target.name]) {
+      if (model.target.name && model._produced[model.target.name]) {
         quantityMined = model._produced[model.target.name];
       }
       return (
@@ -96,7 +96,7 @@ class MillPanel extends React.Component {
     if (!model.target) {
       return <TargetlessIndustryPanel model={model} dropdownChange={this.dropdownChange} /> ;
     } else {
-      if (model.target && model.target.name && model._produced[model.target.name]) {
+      if (model.target.name && model._produced[model.target.name]) {
         quantityMilled = model._produced[model.target.name];
       }
       return (
