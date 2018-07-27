@@ -12,6 +12,7 @@ export default class Industries extends React.Component {
   render() {
     const helperPanels = {
       mine: MinePanel,
+      mill: MillPanel,
     }
     return (
       <div className='container-v'>
@@ -27,7 +28,7 @@ export default class Industries extends React.Component {
             } else {
               // at this point it must be visible, and have a tier > 0
               const Helper = helperPanels[model.type];
-              if (!Helper) throw "oh god wat";    // TODO: better plan
+              if (!Helper) throw `Invalid model type <<${model.type}>>, cannot render`;    // TODO: better plan
               return <Helper
                 key={i}
                 resources={this.resources}
@@ -53,23 +54,11 @@ class MinePanel extends React.Component {
     const model = this.props.model;
     const resources = this.props.resources;
     let quantityMined = null;
-    if (!model._target) {
-      return (
-        <div className='panel'>
-          <div className='container'>
-            <div className='container-v'>
-              Choose a resource, mortal:
-              <select onChange={this.dropdownChange}>
-                <option key='arbitrary_nonsense_gjsdfkiwnbijdfksdugj' value={undefined}>CHOOSE:</option>
-                {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
-              </select>
-            </div>
-          </div>
-        </div>
-      );
+    if (!model.target) {
+      return <TargetlessIndustryPanel model={model} dropdownChange={this.dropdownChange} /> ;
     } else {
-      if (model._target && model._target.name && model._produced[model._target.name]) {
-        quantityMined = model._produced[model._target.name];
+      if (model.target && model.target.name && model._produced[model.target.name]) {
+        quantityMined = model._produced[model.target.name];
       }
       return (
         <div className='panel'>
@@ -91,6 +80,61 @@ class MinePanel extends React.Component {
       );
     }
   }
+}
+
+class MillPanel extends React.Component {
+
+  @autobind
+  dropdownChange(e) {
+    this.props.model.target = e.target.value;
+  }
+
+  render() {
+    const model = this.props.model;
+    const resources = this.props.resources;
+    let quantityMilled = null;
+    if (!model.target) {
+      return <TargetlessIndustryPanel model={model} dropdownChange={this.dropdownChange} /> ;
+    } else {
+      if (model.target && model.target.name && model._produced[model.target.name]) {
+        quantityMilled = model._produced[model.target.name];
+      }
+      return (
+        <div className='panel'>
+          <div className='container'>
+            <div className='container-v'>
+              <p>Milled: {quantityMilled}</p>
+              <ul>
+                {model.buttons.map(({label, active}, idx) => (
+                  <Button label={label}  key={model.target+''+idx} onClick={model.mill.bind(model, idx)} inactive={!(model.target && active)} />
+                ))}
+              </ul>
+              <select onChange={this.dropdownChange}>
+                {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
+              </select>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+  
+}
+
+const TargetlessIndustryPanel = ({model, dropdownChange}) => {
+  return (
+    <div className='panel'>
+      <div className='container'>
+        <div className='container-v'>
+          Choose a resource, mortal:
+          <select onChange={dropdownChange}>
+            <option key='arbitrary_nonsense_gjsdfkiwnbijdfksdugj' value={undefined}>CHOOSE:</option>
+            {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
+          </select>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const UnboughtIndustryPanel = ({model}) => {
