@@ -100,7 +100,7 @@ export default (forceUpdate, globalState) => {
     }
 
     get unlocked() {
-      return globalState.resources.gold.produced >= 3;
+      return true;
     }
 
     get transmutationTargets() {
@@ -160,6 +160,30 @@ export default (forceUpdate, globalState) => {
     }
   }
 
+  class Coffee extends Resource {
+    constructor() {
+      super()
+      this.label = 'Coffee';
+      this.name = 'coffee';
+    }
+
+    get unlocked() {
+      return true;
+    }
+  }
+
+  class Steel extends Resource {
+    constructor() {
+      super()
+      this.label = 'Steel';
+      this.name = 'steel';
+    }
+
+    get unlocked() {
+      return true;
+    }
+  }
+
   var resources_array = [
     new Spinach(),
     new Iron(),
@@ -167,6 +191,8 @@ export default (forceUpdate, globalState) => {
     new Lead(),
     new Gold(),
     new Thaler(),
+    new Coffee(),
+    new Steel(),
   ];
 
   var resources_object = {};

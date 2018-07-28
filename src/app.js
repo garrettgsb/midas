@@ -25,7 +25,7 @@ class App extends React.Component {
       RPOT: new RelentlessPassageOfTime(fu),
       resources: {},
       items: {},
-      industries: {},
+      industries: [],
       apprentices: [],
       maxGold: 0,
       amAssigning: false,

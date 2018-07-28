@@ -9,6 +9,7 @@ export default (forceUpdate, globalState) => {
       this.name = 'unnamedIndustry';
       this.type = undefined;      // probably type-less Industries should have no View
       this.tier = 0;
+      this._target = undefined;
       this._produced = {};
       this.key = Math.random().toString().substring();
 
@@ -28,6 +29,21 @@ export default (forceUpdate, globalState) => {
 
     tickAction() {
       return false; // Nothing happens on tick by default
+    }
+
+    get target() {
+      return this._target;
+    }
+
+    set target(target) {      // takes a proper target, OR a target's name
+      //console.log("bloooop");
+      let targetName = (new Object(target)).name || target;
+      if (!this.possibleTargets) {
+        console.warn("tried to set target to " + targetName + ", but this instance doesn't have targets");
+        return;
+      }
+      this._target = this.possibleTargets.find(target => target.name === targetName);
+      forceUpdate();
     }
 
     get visible() {
@@ -75,6 +91,71 @@ export default (forceUpdate, globalState) => {
 //    }
 //  }
 
+  class Mill extends Industry {
+    constructor(config) {
+      super();
+      this.label = 'Mill';
+      this.name = 'mill';
+      this.type = 'mill';
+
+
+      // Mills work by requiring the player to take a sequence of actions (currently button-presses).
+      // `this.step` records which action/phase/step is the next one to take; when these reach a threshold
+      //    (determined by the current resource target), we'll have some yield.
+
+      this.step = 0;
+    }
+
+    get visible() {
+      return true;
+    }
+
+    get possibleTargets() {
+      return [
+        {name: 'coffee', label: 'Coffee', resource: 'coffee', input: undefined, steps: 3, delay: 0.3, payout: 3},
+        {name: 'steel', label: 'Steel', resource: 'steel', input: 'iron', steps: 5, delay: 1, payout: 3},
+      ];
+    }
+
+    get target() {
+      return super.target;
+    }
+
+    set target(target) {
+      super.target = target;
+      this.step = 0;
+    }
+
+    @autobind
+    mill(buttonNum, withInput=false) {
+      // TODO: think about allowing input
+      if (!this.target || !this.target.name) {
+        console.warn("Mill.mill was invoked, but we have no target");
+        return;   // no target?  no mining!
+      }
+      if (buttonNum != this.step) {
+        // press wrong button?  no cookie!
+        return;
+      }
+
+      this.step++;
+      if (this.step >= this.target.steps) {
+        let targetName = this.target.name;
+        this._produced[targetName] = (this._produced[targetName] || 0) + this.target.payout;
+        globalState.resources[targetName].quantity += this.target.payout;
+        this.step = 0;
+      }
+      forceUpdate();
+    }
+
+    get buttons() {
+      return _.range(this.target.steps).map(step => (
+        {label: step, active: this.step <= step}
+      ))
+    }
+
+
+  }
 
 
   class Mine extends Industry {
@@ -85,7 +166,6 @@ export default (forceUpdate, globalState) => {
       this.type = 'mine';
       this._reservoirSize = 10;
       this._reservoirUsed = 0;
-      this._target = undefined;
       this.prospectCost = 1;
 
 
@@ -105,18 +185,13 @@ export default (forceUpdate, globalState) => {
     }
 
     get possibleTargets() {
-      return Mine.activities;
+      return [
+        {name: 'iron', label: 'Iron', resource: 'iron'},
+        {name: 'tin', label: 'Tin', resource: 'tin'},
+        {name: 'spinach', label: 'Spinach', resource: 'spinach'},
+      ];
     }
 
-    get target() {
-      return this._target;
-    }
-
-    set target(target) {      // takes a proper target, OR a target's name
-      let targetName = (new Object(target)).name || target;
-      this._target = Mine.activities.find(act => act.name === targetName);
-      forceUpdate();
-    }
 
     get reservoir() {
       return Math.max(this._reservoirSize - this._reservoirUsed, 0);
@@ -124,7 +199,7 @@ export default (forceUpdate, globalState) => {
 
     @autobind
     mine() {
-      if (!this.target) {
+      if (!this.target || !this.target.name) {
         console.warn("Mine.mine was invoked, but we have no target");
         return;   // no target?  no mining!
       }
@@ -178,19 +253,10 @@ export default (forceUpdate, globalState) => {
     }
   }
 
-  Mine.activities = [
-    {name: 'iron', label: 'Iron', resource: 'iron'},
-    {name: 'tin', label: 'Tin', resource: 'tin'},
-    {name: 'spinach', label: 'Spinach', resource: 'spinach'},
-  ];
-
   var industries_array = [
     new Mine(),
+    new Mill(),
   ];
 
-  var industries_object = {};
-  for (var item of industries_array) {
-    industries_object[item.name] = item;
-  }
   return industries_array;
 };
