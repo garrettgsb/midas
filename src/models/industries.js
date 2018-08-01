@@ -247,7 +247,7 @@ export default (forceUpdate, globalState) => {
 
   class Farm extends Industry {
     constructor() {
-      super()
+      super();
       this.label = 'Farm';
       this.name = 'farm';
       this.type = 'farm';
@@ -289,14 +289,16 @@ export default (forceUpdate, globalState) => {
     }
 
     tickAction(now) {
-      if (this._reservoirUsed < this._reservoirSize) {
-        this._reservoirUsed += 1;
-      } else {
-        this._reservoirUsed = this._reservoirSize;
-      }
-      if (this._lastHarvest + this._timeTillHarvest < now) {
-        this._lastHarvest += this._timeTillHarvest;
-        this.harvest();
+      if (this.target) {
+        if (this._reservoirUsed < this._reservoirSize) {
+          this._reservoirUsed += 1;
+        } else {
+          this._reservoirUsed = this._reservoirSize;
+        }
+        if (this._lastHarvest + this._timeTillHarvest < now) {
+          this._lastHarvest += this._timeTillHarvest;
+          this.harvest();
+        }
       }
     }
 
