@@ -184,6 +184,19 @@ export default (forceUpdate, globalState) => {
     }
   }
 
+  class Elo extends Resource {
+    constructor() {
+      super()
+      this.label = 'Elo';
+      this.name = 'elo';
+      this.verb = 'Grind';
+    }
+
+    get unlocked() {
+      return true;
+    }
+  }
+
   var resources_array = [
     new Spinach(),
     new Iron(),
@@ -193,6 +206,7 @@ export default (forceUpdate, globalState) => {
     new Thaler(),
     new Coffee(),
     new Steel(),
+    new Elo(),
   ];
 
   var resources_object = {};
