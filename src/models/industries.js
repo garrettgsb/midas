@@ -21,7 +21,7 @@ export default (forceUpdate, globalState) => {
     tick(now) {
       if (now > this.lastTick + this.tickLength) {
         this.lastTick = now;
-        this.tickAction();
+        this.tickAction(now);
         return true;
       }
       return false;
@@ -73,8 +73,6 @@ export default (forceUpdate, globalState) => {
       }
       return 2 ** (this.tier-1);
     }
-
-
   }
 
 //  // This is commented out because it's obsolete, but demonstrates how an industry might use ticks/timeloop
@@ -97,7 +95,6 @@ export default (forceUpdate, globalState) => {
       this.label = 'Mill';
       this.name = 'mill';
       this.type = 'mill';
-
 
       // Mills work by requiring the player to take a sequence of actions (currently button-presses).
       // `this.step` records which action/phase/step is the next one to take; when these reach a threshold
@@ -153,10 +150,7 @@ export default (forceUpdate, globalState) => {
         {label: step, active: this.step <= step}
       ))
     }
-
-
   }
-
 
   class Mine extends Industry {
     constructor(config) {
@@ -167,7 +161,6 @@ export default (forceUpdate, globalState) => {
       this._reservoirSize = 10;
       this._reservoirUsed = 0;
       this.prospectCost = 1;
-
 
       // I think the idea here is that any data that might be procedurally generated
       // or procedurally manipulated in the course of the game should go in state.
@@ -191,7 +184,6 @@ export default (forceUpdate, globalState) => {
         {name: 'spinach', label: 'Spinach', resource: 'spinach'},
       ];
     }
-
 
     get reservoir() {
       return Math.max(this._reservoirSize - this._reservoirUsed, 0);
@@ -253,9 +245,77 @@ export default (forceUpdate, globalState) => {
     }
   }
 
+  class Farm extends Industry {
+    constructor() {
+      super()
+      this.label = 'Farm';
+      this.name = 'farm';
+      this.type = 'farm';
+      this.tickLength = 100;
+      this._reservoirSize = 100;
+      this._reservoirUsed = this._reservoirSize;
+      this._waterDelta = 5;
+      this._lastHarvest = 0;
+      this._timeTillHarvest = 5000;
+    }
+
+    @autobind
+    farm() {
+      if (!this.target || !this.target.name) {
+        console.warn("Farm.farm was invoked, but we have no target");
+        return;
+      }
+      this._produced[this.target.name] = (this._produced[this.target.name] || 0) + this._yield;
+      globalState.resources[this.target.name].quantity += this._yield;
+      forceUpdate();
+    }
+
+    get _yield() {
+      return (this._reservoirUsed / this._reservoirSize * 100) <= 20 ? 10 : (this._reservoirUsed / this._reservoirSize * 100) <= 50 ? 5 : 0;
+    }
+
+    @autobind
+    water() {
+      if (this._reservoirUsed - this._waterDelta > 0) {
+        this._reservoirUsed -= this._waterDelta;
+      } else if (this._reservoirUsed - this._waterDelta < 0) {
+        this._reservoirUsed = 0;
+      }
+      forceUpdate();
+    }
+
+    get reservoir() {
+      return Math.max(this._reservoirSize - this._reservoirUsed, 0);
+    }
+
+    tickAction(now) {
+      if (this._reservoirUsed < this._reservoirSize) {
+        this._reservoirUsed += 1;
+      } else {
+        this._reservoirUsed = this._reservoirSize;
+      }
+      if (this._lastHarvest + this._timeTillHarvest < now) {
+        this._lastHarvest += this._timeTillHarvest;
+        this.farm();
+      }
+    }
+
+    get possibleTargets() {
+      return [
+        {name: 'spinach', label: 'Spinach', resource: 'spinach'},
+        {name: 'elo', label: 'Elo', resource: 'elo'},
+      ];
+    }
+
+    get visible() {
+      return true;
+    }
+  }
+
   var industries_array = [
     new Mine(),
     new Mill(),
+    new Farm(),
   ];
 
   return industries_array;
