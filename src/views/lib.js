@@ -21,7 +21,7 @@ const Counter = ({ label, quantity }) => {
 const FillBar = ({ quantity, max }) => {
   const fillProgressStyle = {
     height: `${quantity / max * 100}%`,
-  }
+  };
 
   return (
     <div className='fillbar'>
@@ -33,7 +33,7 @@ const FillBar = ({ quantity, max }) => {
 const FarmWaterBar = ({ quantity, max }) => {
   const fillProgressStyle = {
     height: `${quantity / max * 100}%`,
-  }
+  };
 
   const startColor = { r: 24, g: 126, b: 3 };
   const endColor = { r: 204, g: 204, b: 0 };

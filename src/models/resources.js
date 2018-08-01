@@ -59,7 +59,7 @@ export default (forceUpdate, globalState) => {
 
   class Spinach extends Resource {
     constructor() {
-      super()
+      super();
       this.label = 'Spinach';
       this.name = 'spinach';
       this.verb = 'Pluck';
@@ -76,7 +76,7 @@ export default (forceUpdate, globalState) => {
 
   class Iron extends Resource {
     constructor() {
-      super()
+      super();
       this.label = 'Iron';
       this.name = 'iron';
       this.verb = 'Scrounge';
@@ -93,7 +93,7 @@ export default (forceUpdate, globalState) => {
 
   class Tin extends Resource {
     constructor() {
-      super()
+      super();
       this.label = 'Tin';
       this.name = 'tin';
       this.verb = 'Scrounge';
@@ -133,7 +133,7 @@ export default (forceUpdate, globalState) => {
 
   class Gold extends Resource {
     constructor() {
-      super()
+      super();
       this.label = 'Gold';
       this.name = 'gold';
       this.verb = '💥';
@@ -147,7 +147,7 @@ export default (forceUpdate, globalState) => {
 
   class Thaler extends Resource {
     constructor() {
-      super()
+      super();
       this.label = 'Thalers';
       this.name = 'thaler';
       this.quantity = 0;
@@ -162,7 +162,7 @@ export default (forceUpdate, globalState) => {
 
   class Coffee extends Resource {
     constructor() {
-      super()
+      super();
       this.label = 'Coffee';
       this.name = 'coffee';
     }
@@ -174,7 +174,7 @@ export default (forceUpdate, globalState) => {
 
   class Steel extends Resource {
     constructor() {
-      super()
+      super();
       this.label = 'Steel';
       this.name = 'steel';
     }
@@ -186,7 +186,7 @@ export default (forceUpdate, globalState) => {
 
   class Elo extends Resource {
     constructor() {
-      super()
+      super();
       this.label = 'Elo';
       this.name = 'elo';
       this.verb = 'Grind';
