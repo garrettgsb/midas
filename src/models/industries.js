@@ -254,13 +254,13 @@ export default (forceUpdate, globalState) => {
       this.tickLength = 100;
       this._reservoirSize = 100;
       this._reservoirUsed = this._reservoirSize;
-      this._waterDelta = 5;
-      this._lastHarvest = 0;
-      this._timeTillHarvest = 5000;
+      this._waterDelta = 5; //How much water you add on water click
+      this._lastHarvest = 0; //Timestamp in ms
+      this._timeTillHarvest = 5000; //Amount of time between harvest in ms
     }
 
     @autobind
-    farm() {
+    harvest() {
       if (!this.target || !this.target.name) {
         console.warn("Farm.farm was invoked, but we have no target");
         return;
@@ -296,7 +296,7 @@ export default (forceUpdate, globalState) => {
       }
       if (this._lastHarvest + this._timeTillHarvest < now) {
         this._lastHarvest += this._timeTillHarvest;
-        this.farm();
+        this.harvest();
       }
     }
 
