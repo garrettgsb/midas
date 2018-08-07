@@ -31,6 +31,10 @@ export default (forceUpdate, globalState) => {
       return false; // Nothing happens on tick by default
     }
 
+    onChangeTarget() {
+      return false;// Nothing happens when changing the target by default
+    }
+
     get target() {
       return this._target;
     }
@@ -252,17 +256,20 @@ export default (forceUpdate, globalState) => {
       this.name = 'farm';
       this.type = 'farm';
       this.tickLength = 100;
-      this._reservoirSize = 100;
-      this._reservoirUsed = this._reservoirSize;
-      this._waterDelta = 5; //How much water you add on water click
+      this._maxReservoir = 100;
+      this._currentReservoir = 0;
+      this._waterDelta = 5; //How much you increase the _currentReservoir when you add on water click
+      this._absorptionDelta = 1; // How much the _currentReservoir is decreased every tick
       this._lastHarvest = 0; //Timestamp in ms
-      this._timeTillHarvest = 5000; //Amount of time between harvest in ms
+      this._timeBetweenHarvests = 5000; //Amount of time between harvest in ms
+      this._upperYield = 10; // Move these into balance file once merged
+      this._lowerYield = 5;
     }
 
     @autobind
     harvest() {
       if (!this.target || !this.target.name) {
-        console.warn("Farm.farm was invoked, but we have no target");
+        console.warn("Farm.harvest was invoked, but we have no target");
         return;
       }
       this._produced[this.target.name] = (this._produced[this.target.name] || 0) + this._yield;
@@ -271,35 +278,37 @@ export default (forceUpdate, globalState) => {
     }
 
     get _yield() {
-      return (this._reservoirUsed / this._reservoirSize * 100) <= 20 ? 10 : (this._reservoirUsed / this._reservoirSize * 100) <= 50 ? 5 : 0;
+      if (this._currentReservoir / this._maxReservoir >= 0.8) {
+        return this._upperYield;
+      } else if (this._currentReservoir / this._maxReservoir >= 0.5) {
+        return this._lowerYield;
+      } else {
+        return 0;
+      }
     }
 
     @autobind
     water() {
-      if (this._reservoirUsed - this._waterDelta > 0) {
-        this._reservoirUsed -= this._waterDelta;
-      } else if (this._reservoirUsed - this._waterDelta < 0) {
-        this._reservoirUsed = 0;
+      if (this._currentReservoir + this._waterDelta <= this._maxReservoir) {
+        this._currentReservoir = Math.max(this._currentReservoir + this._waterDelta, 0);
+        forceUpdate();
       }
-      forceUpdate();
-    }
-
-    get reservoir() {
-      return Math.max(this._reservoirSize - this._reservoirUsed, 0);
     }
 
     tickAction(now) {
       if (this.target) {
-        if (this._reservoirUsed < this._reservoirSize) {
-          this._reservoirUsed += 1;
-        } else {
-          this._reservoirUsed = this._reservoirSize;
+        if (this._currentReservoir > 0) {
+          this._currentReservoir -= this._absorptionDelta;
         }
-        if (this._lastHarvest + this._timeTillHarvest < now) {
-          this._lastHarvest += this._timeTillHarvest;
+        if (this._lastHarvest + this._timeBetweenHarvests < now) {
+          this._lastHarvest += this._timeBetweenHarvests;
           this.harvest();
         }
       }
+    }
+
+    onChangeTarget() {
+      this._currentReservoir = 0;
     }
 
     get possibleTargets() {

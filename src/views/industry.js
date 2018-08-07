@@ -127,6 +127,7 @@ class FarmPanel extends React.Component {
   @autobind
   dropdownChange(e) {
     this.props.model.target = e.target.value;
+    this.props.model.onChangeTarget();
   }
 
   render() {
@@ -143,7 +144,7 @@ class FarmPanel extends React.Component {
         <div className='panel'>
           <div className='container'>
             <div className='container-v'>
-              <p>Reservoir: {model.reservoir}</p>
+              <p>Reservoir: {model._currentReservoir}</p>
               <p>Farmed: {quantityFarmed}</p>
               <Button label="Water" onClick={model.water} inactive={!model.target} />
               <select onChange={this.dropdownChange}>
@@ -151,7 +152,7 @@ class FarmPanel extends React.Component {
               </select>
             </div>
             <div className='container-v'>
-              <FarmWaterBar quantity={model.reservoir} max={model._reservoirSize}/>
+              <FarmWaterBar quantity={model._currentReservoir} max={model._maxReservoir}/>
             </div>
           </div>
         </div>
