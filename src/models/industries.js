@@ -46,6 +46,10 @@ export default (forceUpdate, globalState) => {
       forceUpdate();
     }
 
+    handleTargetChange(newTarget) {
+      this.target = newTarget;
+    }
+
     get visible() {
       // If you subclass Industry, you'd better override this!
       throw new Error("Not Implemented: get visible()");
@@ -114,12 +118,8 @@ export default (forceUpdate, globalState) => {
       ];
     }
 
-    get target() {
-      return super.target;
-    }
-
-    set target(target) {
-      super.target = target;
+    handleTargetChange(newTarget) {
+      super.target = newTarget;
       this.step = 0;
     }
 
@@ -260,6 +260,8 @@ export default (forceUpdate, globalState) => {
       this._timeBetweenHarvests = 5000; //Amount of time between harvest in ms
       this._upperYield = 10; // Move these into balance file once merged
       this._lowerYield = 5;
+      this._upperThreshold = 0.8;
+      this._lowerThreshold = 0.5;
     }
 
     @autobind
@@ -274,9 +276,9 @@ export default (forceUpdate, globalState) => {
     }
 
     get _yield() {
-      if (this._currentReservoir / this._maxReservoir >= 0.8) {
+      if (this._currentReservoir / this._maxReservoir >= this._upperThreshold) {
         return this._upperYield;
-      } else if (this._currentReservoir / this._maxReservoir >= 0.5) {
+      } else if (this._currentReservoir / this._maxReservoir >= this._lowerThreshold) {
         return this._lowerYield;
       } else {
         return 0;
@@ -303,14 +305,9 @@ export default (forceUpdate, globalState) => {
       }
     }
 
-    get target() {
-      return super.target;
-    }
-
-    set target(target) {
-      super.target = target;
+    handleTargetChange(newTarget) {
+      super.target = newTarget;
       this._currentReservoir = 0;
-      forceUpdate();
     }
 
     get possibleTargets() {
