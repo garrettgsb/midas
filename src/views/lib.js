@@ -30,4 +30,24 @@ const FillBar = ({ quantity, max }) => {
   );
 };
 
-export { Button, Counter, FillBar };
+const FarmWaterBar = ({ quantity, max }) => {
+  const fillProgressStyle = {
+    height: `${quantity / max * 100}%`,
+  };
+
+  const startColor = { r: 24, g: 126, b: 3 };
+  const endColor = { r: 204, g: 204, b: 0 };
+  const R = startColor.r * (quantity / max) + endColor.r * (1 - (quantity / max));
+  const G = startColor.g * (quantity / max) + endColor.g * (1 - (quantity / max));
+  const B = startColor.b * (quantity / max) + endColor.b * (1 - (quantity / max));
+
+  fillProgressStyle['backgroundColor'] = `rgb(${R}, ${G}, ${B})`;
+
+  return (
+    <div className='fillbar'>
+      <div className='fillProgress' style={fillProgressStyle}/>
+    </div>
+  );
+};
+
+export { Button, Counter, FillBar, FarmWaterBar };

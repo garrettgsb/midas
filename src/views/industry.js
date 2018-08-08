@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
-import { Button, Counter, FillBar } from './lib';
+import { Button, Counter, FillBar, FarmWaterBar } from './lib';
 
 export default class Industries extends React.Component {
   constructor(props) {
@@ -13,6 +13,7 @@ export default class Industries extends React.Component {
     const helperPanels = {
       mine: MinePanel,
       mill: MillPanel,
+      farm: FarmPanel,
     }
     return (
       <div className='container-v'>
@@ -45,17 +46,12 @@ export default class Industries extends React.Component {
 
 class MinePanel extends React.Component {
 
-  @autobind
-  dropdownChange(e) {
-    this.props.model.target = e.target.value;
-  }
-
   render() {
     const model = this.props.model;
     const resources = this.props.resources;
     let quantityMined = null;
     if (!model.target) {
-      return <TargetlessIndustryPanel model={model} dropdownChange={this.dropdownChange} /> ;
+      return <TargetlessIndustryPanel model={model} dropdownChange={(e) => model.handleTargetChange(e.target.value)} /> ;
     } else {
       if (model.target.name && model._produced[model.target.name]) {
         quantityMined = model._produced[model.target.name];
@@ -68,7 +64,7 @@ class MinePanel extends React.Component {
               <p>Mined: {quantityMined}</p>
               <Button label="Mine" onClick={model.mine} inactive={!model.target} />
               <Button label={`Prospect (${model.prospectCost} ð)`} onClick={model.prospect} inactive={!model.target} />
-              <select onChange={this.dropdownChange}>
+              <select onChange={(e) => model.handleTargetChange(e.target.value)}>
                 {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
               </select>
             </div>
@@ -84,17 +80,12 @@ class MinePanel extends React.Component {
 
 class MillPanel extends React.Component {
 
-  @autobind
-  dropdownChange(e) {
-    this.props.model.target = e.target.value;
-  }
-
   render() {
     const model = this.props.model;
     const resources = this.props.resources;
     let quantityMilled = null;
     if (!model.target) {
-      return <TargetlessIndustryPanel model={model} dropdownChange={this.dropdownChange} /> ;
+      return <TargetlessIndustryPanel model={model} dropdownChange={(e) => model.handleTargetChange(e.target.value)} /> ;
     } else {
       if (model.target.name && model._produced[model.target.name]) {
         quantityMilled = model._produced[model.target.name];
@@ -109,7 +100,7 @@ class MillPanel extends React.Component {
                   <Button label={label}  key={model.target+''+idx} onClick={model.mill.bind(model, idx)} inactive={!(model.target && active)} />
                 ))}
               </ul>
-              <select onChange={this.dropdownChange}>
+              <select onChange={(e) => model.handleTargetChange(e.target.value)}>
                 {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
               </select>
             </div>
@@ -118,7 +109,40 @@ class MillPanel extends React.Component {
       );
     }
   }
-  
+
+}
+
+class FarmPanel extends React.Component {
+
+  render() {
+    const model = this.props.model;
+    const resources = this.props.resources;
+    let quantityFarmed = null;
+    if (!model.target) {
+      return <TargetlessIndustryPanel model={model} dropdownChange={(e) => model.handleTargetChange(e.target.value)} /> ;
+    } else {
+      if (model.target.name && model._produced[model.target.name]) {
+        quantityFarmed = model._produced[model.target.name];
+      }
+      return (
+        <div className='panel'>
+          <div className='container'>
+            <div className='container-v'>
+              <p>Reservoir: {model._currentReservoir}</p>
+              <p>Farmed: {quantityFarmed}</p>
+              <Button label="Water" onClick={model.water} inactive={!model.target} />
+              <select onChange={(e) => model.handleTargetChange(e.target.value)}>
+                {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
+              </select>
+            </div>
+            <div className='container-v'>
+              <FarmWaterBar quantity={model._currentReservoir} max={model._maxReservoir}/>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
 }
 
 const TargetlessIndustryPanel = ({model, dropdownChange}) => {
