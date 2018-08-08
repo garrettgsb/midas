@@ -127,7 +127,6 @@ class FarmPanel extends React.Component {
   @autobind
   dropdownChange(e) {
     this.props.model.target = e.target.value;
-    this.props.model.onChangeTarget();
   }
 
   render() {

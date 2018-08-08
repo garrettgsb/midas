@@ -31,10 +31,6 @@ export default (forceUpdate, globalState) => {
       return false; // Nothing happens on tick by default
     }
 
-    onChangeTarget() {
-      return false;// Nothing happens when changing the target by default
-    }
-
     get target() {
       return this._target;
     }
@@ -307,8 +303,14 @@ export default (forceUpdate, globalState) => {
       }
     }
 
-    onChangeTarget() {
+    get target() {
+      return super.target;
+    }
+
+    set target(target) {
+      super.target = target;
       this._currentReservoir = 0;
+      forceUpdate();
     }
 
     get possibleTargets() {
