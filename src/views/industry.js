@@ -45,109 +45,57 @@ export default class Industries extends React.Component {
 }
 
 class MinePanel extends React.Component {
-
   render() {
     const model = this.props.model;
-    const resources = this.props.resources;
-    let quantityMined = null;
-    if (!model.target) {
-      return <TargetlessIndustryPanel model={model} dropdownChange={(e) => model.handleTargetChange(e.target.value)} /> ;
-    } else {
-      if (model.target.name && model._produced[model.target.name]) {
-        quantityMined = model._produced[model.target.name];
-      }
-      return (
-        <div className='panel'>
-          <div className='container'>
-            <div className='container-v'>
-              <p>Reservoir: {model.reservoir}</p>
-              <p>Mined: {quantityMined}</p>
-              <Button label="Mine" onClick={model.mine} inactive={!model.target} />
-              <Button label={`Prospect (${model.prospectCost} ð)`} onClick={model.prospect} inactive={!model.target} />
-              <select onChange={(e) => model.handleTargetChange(e.target.value)}>
-                {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
-              </select>
-            </div>
-            <div className='container-v'>
-              <FillBar quantity={model.reservoir} max={model._reservoirSize}/>
-            </div>
-          </div>
+    return (
+      <IndustryPanelLayout model={model}>
+        <div className='container-v'>
+          <Button label="Mine" onClick={model.mine} inactive={!model.target} />
+          <Button label={`Prospect (${model.prospectCost} ð)`} onClick={model.prospect} inactive={!model.target} />
         </div>
-      );
-    }
+        <div className='container-v'>
+          <FillBar quantity={model.reservoir} max={model._reservoirSize}/>
+        </div>
+      </IndustryPanelLayout>
+    );
   }
 }
 
 class MillPanel extends React.Component {
-
   render() {
     const model = this.props.model;
-    const resources = this.props.resources;
-    let quantityMilled = null;
-    if (!model.target) {
-      return <TargetlessIndustryPanel model={model} dropdownChange={(e) => model.handleTargetChange(e.target.value)} /> ;
-    } else {
-      if (model.target.name && model._produced[model.target.name]) {
-        quantityMilled = model._produced[model.target.name];
-      }
-      return (
-        <div className='panel'>
-          <div className='container'>
-            <div className='container-v'>
-              <p>Milled: {quantityMilled}</p>
-              <ul>
-                {model.buttons.map(({label, active}, idx) => (
-                  <Button label={label}  key={model.target+''+idx} onClick={model.mill.bind(model, idx)} inactive={!(model.target && active)} />
-                ))}
-              </ul>
-              <select onChange={(e) => model.handleTargetChange(e.target.value)}>
-                {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
-              </select>
-            </div>
-          </div>
-        </div>
-      );
-    }
+    return (
+      <IndustryPanelLayout model={model}>
+        <ul>
+          {model.buttons && model.buttons.map(({label, active}, idx) => (
+            <Button label={label}  key={model.target+''+idx} onClick={model.mill.bind(model, idx)} inactive={!(model.target && active)} />
+          ))}
+        </ul>
+      </IndustryPanelLayout>
+    );
   }
-
 }
 
 class FarmPanel extends React.Component {
-
   render() {
     const model = this.props.model;
-    const resources = this.props.resources;
-    let quantityFarmed = null;
-    if (!model.target) {
-      return <TargetlessIndustryPanel model={model} dropdownChange={(e) => model.handleTargetChange(e.target.value)} /> ;
-    } else {
-      if (model.target.name && model._produced[model.target.name]) {
-        quantityFarmed = model._produced[model.target.name];
-      }
-      return (
-        <div className='panel'>
-          <div className='container'>
-            <div className='container-v'>
-              <p>Reservoir: {model._currentReservoir}</p>
-              <p>Farmed: {quantityFarmed}</p>
-              <Button label="Water" onClick={model.water} inactive={!model.target} />
-              <select onChange={(e) => model.handleTargetChange(e.target.value)}>
-                {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
-              </select>
-            </div>
-            <div className='container-v'>
-              <FarmWaterBar quantity={model._currentReservoir} max={model._maxReservoir}/>
-            </div>
-          </div>
+    return (
+      <IndustryPanelLayout model={model}>
+        <div className='container-v'>
+          <Button label="Water" onClick={model.water} inactive={!model.target} />
         </div>
-      );
-    }
+        <div className='container-v'>
+          <FarmWaterBar quantity={model._currentReservoir} max={model._maxReservoir}/>
+        </div>
+      </IndustryPanelLayout>
+    );
   }
 }
 
 const TargetlessIndustryPanel = ({model, dropdownChange}) => {
   return (
     <div className='panel'>
+      <h2>{model.label}</h2>
       <div className='container'>
         <div className='container-v'>
           Choose a resource, mortal:
@@ -164,7 +112,7 @@ const TargetlessIndustryPanel = ({model, dropdownChange}) => {
 const UnboughtIndustryPanel = ({model}) => {
   return (
     <div className='panel'>
-      <div>{model.label}</div>
+      <h2>{model.label}</h2>
       <Button
         label={`Buy (${model.upgradeCost} ð)`}
         inactive={!model.canUpgrade}
@@ -173,3 +121,29 @@ const UnboughtIndustryPanel = ({model}) => {
     </div>
   )
 };
+
+const IndustryPanelLayout = ({model, children}) => {
+  if (!model.target) {
+    return <TargetlessIndustryPanel model={model} dropdownChange={(e) => model.handleTargetChange(e.target.value)} /> ;
+  } else {
+    const quantityProduced = (model.target.name && model._produced[model.target.name]);
+    return (
+      <div className='panel'>
+        <div className='container-v' style={{margin: 0}}>
+          <h2>{model.label}</h2>
+          <div>Produced: {quantityProduced}</div>
+          <div>{model.reservoir !== undefined ? "Reservoir: " + model.reservoir : ""}</div>
+        </div>
+        <div className='container'>
+          {children}
+        </div>
+        { model.possibleTargets ? (
+            <select onChange={(e) => model.handleTargetChange(e.target.value)}>
+              {model.possibleTargets.map(({name, label}) => (<option key={name} value={name}>{label}</option>))}
+            </select>
+        ) : null}
+      </div>
+    );
+  }
+}
+

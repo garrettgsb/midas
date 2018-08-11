@@ -146,6 +146,9 @@ export default (forceUpdate, globalState) => {
     }
 
     get buttons() {
+      if (!this.target) {
+        return [];
+      }
       return _.range(this.target.steps).map(step => (
         {label: step, active: this.step <= step}
       ))
