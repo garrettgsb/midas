@@ -99,6 +99,7 @@ class App extends React.Component {
           resources={this.state.resources}
           assigning={this.state.amAssigning ? this.assign_append : undefined}
         />
+        { /* disable a bunch of stuff */ false && ( <div>
         <Shop
           items={Object.values(this.state.items)}
         />
@@ -109,6 +110,7 @@ class App extends React.Component {
           currentAssignee={this.state.amAssigning.id}
         />
         <Alchemy />
+        </div> ) /* end of disabling stuff */ }
       </div>
     );
   }
