@@ -7,7 +7,7 @@ const Resources = ({resources, transmute, amAssigning, assign_append}) => {
       <h1>Resources</h1>
       <div className='container'>
         {Object.values(resources)
-          .filter(resource => resource.unlocked)
+          //.filter(resource => resource.unlocked)
           .map(resource => {
             return <ResourcePanel
               key={resource.name}
@@ -41,6 +41,17 @@ class ResourcePanel extends React.Component {
   }
 
   render() {
+    const resource = this.props.resource;
+    return (
+      <div className='panel'>
+        <h2>{resource.label}</h2>
+        <div>{resource.quantity}</div>
+      </div>
+    );
+  }
+
+
+  old_render() {
     const {resource, resources, transmute} = this.props;
     const currentTransmuteTarget = this.state.transmuteTarget;
     return (
