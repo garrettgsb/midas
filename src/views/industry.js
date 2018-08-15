@@ -138,9 +138,9 @@ const IndustryPanelLayout = ({model, children}) => {
           {children}
         </div>
         { model.possibleTargets ? (
-            <select onChange={(e) => model.handleTargetChange(e.target.value)}>
+            <select onChange={(e) => model.handleTargetChange(e.target.value)} value={model.target.name} >
               {model.possibleTargets.map(({name, label}) => (
-                <option key={name} value={name} {...{selected: name===model.target.name}} >{label}</option>
+                <option key={name} value={name}>{label}</option>
               ))}
             </select>
         ) : null}
