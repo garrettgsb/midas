@@ -1,6 +1,9 @@
 function makeRegistry(template, _parent, _history = [], _problem) {
+  if (arguments.length === 0) {
+    template = {};
+  }
   function reg(_default) {
-    if (template === undefined && Number.isNaN(_default)) {
+    if (template === undefined && _default === makeRegistry.exception) {
       throw new Error("Key sequence lookup failed (at marked element): " + _history.map(k => k===_problem ? `(${k})` : k).join('.'));
     } else if (template === undefined) {
       return _default;
@@ -21,10 +24,13 @@ function makeRegistry(template, _parent, _history = [], _problem) {
         _parent[thisName] = template = {};
       }
       template[prop] = value;
+      return true;
     }
   });
   return prox;
 }
+
+makeRegistry.exception = Symbol("if used as a default value, an exception will be thrown");
 
 module.exports = makeRegistry;
 
@@ -40,6 +46,8 @@ module.exports = makeRegistry;
 
 
 if (require && require.main && require.main === module) {   // prevents the rest of this code from running if `require`d
+
+  console.log("running registry test suite...");
 
   function assertEqual(a, b) {
     if (a !== b) {
@@ -80,15 +88,17 @@ if (require && require.main && require.main === module) {   // prevents the rest
   assertEqual(registry.w.x.y.z(1234), 1234);
 
 
-  // but if you like raising errors, pass NaN as a default argument
+  // but if you like raising errors, pass makeRegistry.exception as a default argument
   try {
-    registry.w.x.y.z(NaN);
+    registry.w.x.y.z(makeRegistry.exception);
+    throw new Error("why was no exception thrown?  that is wrong!");
   } catch (err) {
     assertEqual(err.message, "Key sequence lookup failed (at marked element): (w).x.y.z");
   }
   // this also works with only a single failed lookup (whereas vanilla JS only raises when it gets nested failed lookups)
   try {
-    registry.w(NaN);
+    registry.w(makeRegistry.exception);
+    throw new Error("why was no exception thrown?  that is wrong!");
   } catch (err) {
     assertEqual(err.message, "Key sequence lookup failed (at marked element): (w)");
   }
@@ -105,6 +115,13 @@ if (require && require.main && require.main === module) {   // prevents the rest
   registry.novel.path.of.keys = 'a secret';                       // just go for it!
   assertEqual(registry.novel.path.of.keys("meh"), "a secret");    // it worked!
 
+  // You can make a new empty registry by passing an empty template, of course:
+  const emptyRegistry1 = makeRegistry({});
+
+  // But the first argument is optional.  This is the same as makeRegistry({}).
+  const emptyRegistry2 = makeRegistry();
+  assertEqual(typeof emptyRegistry2(), 'object');
+  assertEqual(Object.keys(emptyRegistry2()).length, 0);
 
   // Also you can bail out of registry mode any time in the call chain that you wish:
   const simple = makeRegistry({});
@@ -113,12 +130,14 @@ if (require && require.main && require.main === module) {   // prevents the rest
 
   // ... assuming that you want to lose the other features
   try {
-    simple.q.r.s(NaN)
+    simple.q.r.s(makeRegistry.exception)
+    throw new Error("why was no exception thrown?  that is wrong!");
   } catch (err) {
     assertEqual(err.message, "Key sequence lookup failed (at marked element): (q).r.s");
   }
   try {
     simple().q.r.s
+    throw new Error("why was no exception thrown?  that is wrong!");
   } catch (err) {
     // how about a misleading vanilla JS error message?  would that be nice?  fine!
     assertEqual(err.message, "Cannot read property 'r' of undefined");
