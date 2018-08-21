@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
-import { Button, Counter, FillBar, FarmWaterBar } from './lib';
+import { Button, Counter, MineReservoirFillBar, FarmWaterFillBar } from './lib';
 
 export default class Industries extends React.Component {
   constructor(props) {
@@ -54,7 +54,7 @@ class MinePanel extends React.Component {
           <Button label={`Prospect (${model.prospectCost} ð)`} onClick={model.prospect} inactive={!model.target} />
         </div>
         <div className='container-v'>
-          <FillBar quantity={model.reservoir} max={model._reservoirSize}/>
+          <MineReservoirFillBar quantity={model.reservoir} max={model._reservoirSize}/>
         </div>
       </IndustryPanelLayout>
     );
@@ -85,7 +85,7 @@ class FarmPanel extends React.Component {
           <Button label="Water" onClick={model.water} inactive={!model.target} />
         </div>
         <div className='container-v'>
-          <FarmWaterBar quantity={model._currentReservoir} max={model._maxReservoir}/>
+          <FarmWaterFillBar quantity={model._currentReservoir} max={model._maxReservoir}/>
         </div>
       </IndustryPanelLayout>
     );

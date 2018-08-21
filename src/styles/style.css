@@ -133,7 +133,6 @@ select   {
   width: 10px;
 
   .fillProgress {
-    background-color: rgba(50, 180, 100, 1);
     border-radius: 5% 5% 0% 0%;
     width: 100%;
   }
