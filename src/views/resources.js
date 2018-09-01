@@ -1,20 +1,15 @@
 import React from 'react';
 import { Button, Counter } from './lib';
 
-const Resources = ({resources, transmute, amAssigning, assign_append}) => {
+const Resources = ({resources}) => {
   return (
     <div className='container-v'>
       <h1>Resources</h1>
       <div className='container'>
-        {Object.values(resources)
-          //.filter(resource => resource.unlocked)
-          .map(resource => {
+        {resources.entries.map(resourceEntry => {
             return <ResourcePanel
-              key={resource.name}
-              resource={resource}
-              resources={resources}
-              transmute={transmute}
-              assigning={amAssigning ? assign_append : undefined}
+              key={resourceEntry.name}
+              resource={resourceEntry}
             />
           })
         }

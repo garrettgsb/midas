@@ -5,6 +5,7 @@ import bind_resources from './models/resources.js';
 import bind_items from './models/items';
 import Apprentice from './models/apprentices.js';
 import bind_industries from './models/industries';
+import predi_resource_pool from './models/resourcePool';
 
 import Debug from './views/debug.js';
 import Resources from './views/resources';
@@ -30,11 +31,16 @@ class App extends React.Component {
       maxGold: 0,
       amAssigning: false,
     };
+
+    const ResourcePool = predi_resource_pool(fu, this.state);
+    this.state.resources = new ResourcePool();
+    console.log(this.state.resources.tin.quantity);
+
     this.state.items = bind_items(fu, this.state);
-    this.state.resources = bind_resources(fu, this.state);
+    //this.state.resources = bind_resources(fu, this.state);
     this.state.industries = bind_industries(fu, this.state);
-    this.state.resources.lead.quantity = 5;
-    this.state.resources.thaler.quantity = 5;
+    this.state.resources.lead.set(9, 'init');
+    this.state.resources.thalers.set(10, 'init');
     this.state.RPOT.run();
 
     // debugging hackery
@@ -89,10 +95,7 @@ class App extends React.Component {
       <div className='container-v'>
         { window.debug.hax && <Debug/> }
         <Resources
-          amAssigning={this.state.amAssigning}
-          assign_append={this.assign_append}
           resources={this.state.resources}
-          transmute={this.transmute}
         />
         <Industry
           industries={this.state.industries}
