@@ -37,7 +37,7 @@ export default (forceUpdate, globalState) => {
     }
 
     set quantity(x) {
-      // TODO: remove this entire setter
+      // TODO: remove this entire setter after proof-reading to ensure that no-one is assigning to globalState.resources.XYZ
       console.trace('someone is using the deprecated setter for resource quantity!');
       this.set(x, 'deprecated setter');
     }
@@ -51,7 +51,6 @@ export default (forceUpdate, globalState) => {
         this[resourceName] = new ResourcePoolEntry(resourceName, quantityMap[resourceName] || 0, this);
         this.entries.push(this[resourceName]);
       }
-      this.thaler = this.thalers;   // this is a blatant hack.  not sure if it's a good idea.
     }
 
     get spareCapacity() {
@@ -68,6 +67,7 @@ export default (forceUpdate, globalState) => {
 
 }
 
+////// TODO: get unit testing working and move this (or something better) to a unit test.
 // rp = new ResourcePool(10);
 // console.log(0, rp.tin.quantity);
 // rp.tin.delta(3, "income");

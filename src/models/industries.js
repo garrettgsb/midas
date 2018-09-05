@@ -56,7 +56,7 @@ export default (forceUpdate, globalState) => {
     }
 
     get canUpgrade() {
-      return globalState.resources.thaler.quantity >= this.upgradeCost;
+      return globalState.resources.thalers.quantity >= this.upgradeCost;
     }
 
     @autobind
@@ -222,7 +222,7 @@ export default (forceUpdate, globalState) => {
 
     get canProspect() {
       // TODO: I don't think this is right.
-      return globalState.resources.thaler.quantity >= this.prospectCost;
+      return globalState.resources.thalers.quantity >= this.prospectCost;
     }
 
     @autobind
