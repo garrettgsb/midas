@@ -34,10 +34,8 @@ class App extends React.Component {
 
     const ResourcePool = predi_resource_pool(fu, this.state);
     this.state.resources = new ResourcePool();
-    console.log(this.state.resources.tin.quantity);
 
     this.state.items = bind_items(fu, this.state);
-    //this.state.resources = bind_resources(fu, this.state);
     this.state.industries = bind_industries(fu, this.state);
     this.state.resources.lead.set(9, 'init');
     this.state.resources.thalers.set(10, 'init');
