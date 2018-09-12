@@ -1,9 +1,10 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
 
-import bind_items from './models/items';
 import Apprentice from './models/apprentices.js';
 import bind_industries from './models/industries';
+import bind_items from './models/items';
+import bind_resources from './models/resources';
 
 import Debug from './views/debug.js';
 import Resources from './views/resources';
