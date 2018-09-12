@@ -41,6 +41,8 @@ module.exports = {
             "error",
             { "args": "none" },
         ],
+        //"object-curly-spacing": [ "error", "always" ],
+        //"react/jsx-curly-spacing": [ "error", { "when": "never", "children": { "when": "always" } } ],
         "react/prop-types": "warn",         // TODO: JH to fix, then remove this line.
         "react/no-string-refs": "warn",     // TODO: GSB to fix, then remove this line.
     }
