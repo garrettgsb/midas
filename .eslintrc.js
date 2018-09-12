@@ -34,7 +34,14 @@ module.exports = {
             "always"
         ],
         "no-console": [
-            "warn"
+            "error",
+            { "allow": ["debug", "info", "warn", "error"] },
         ],
+        "no-unused-vars": [
+            "error",
+            { "args": "none" },
+        ],
+        "react/prop-types": "warn",         // TODO: JH to fix, then remove this line.
+        "react/no-string-refs": "warn",     // TODO: GSB to fix, then remove this line.
     }
 };
