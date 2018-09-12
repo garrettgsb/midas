@@ -9,7 +9,7 @@ export default (forceUpdate, globalState) => {
       this.find = () => {
         this.quantity += this.findVolume;
         forceUpdate();
-      }
+      };
     }
 
     get quantity() {
@@ -110,7 +110,7 @@ export default (forceUpdate, globalState) => {
 
   class Lead extends Resource {
     constructor() {
-      super()
+      super();
       this.label = 'Lead';
       this.name = 'lead';
       this.verb = 'Scrounge';
@@ -215,4 +215,4 @@ export default (forceUpdate, globalState) => {
   }
   return resources_object;
 
-}
+};

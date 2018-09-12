@@ -1,4 +1,5 @@
 import autobind from 'autobind-decorator';
+import _ from 'lodash';
 export default (forceUpdate, globalState) => {
 
   class Industry {
@@ -79,22 +80,22 @@ export default (forceUpdate, globalState) => {
     }
   }
 
-//  // This is commented out because it's obsolete, but demonstrates how an industry might use ticks/timeloop
-//  class SpinachGarden extends Industry {
-//    constructor() {
-//      super();
-//      this.name = 'spinachGarden';
-//      this.label = 'Spinach Garden';
-//      this.targetResource = 'spinach';
-//    }
-//
-//    tickAction() {
-//      if (this.quantity < this.maxQuantity) this.quantity += 1;
-//    }
-//  }
+  //  // This is commented out because it's obsolete, but demonstrates how an industry might use ticks/timeloop
+  //  class SpinachGarden extends Industry {
+  //    constructor() {
+  //      super();
+  //      this.name = 'spinachGarden';
+  //      this.label = 'Spinach Garden';
+  //      this.targetResource = 'spinach';
+  //    }
+  //
+  //    tickAction() {
+  //      if (this.quantity < this.maxQuantity) this.quantity += 1;
+  //    }
+  //  }
 
   class Mill extends Industry {
-    constructor(config) {
+    constructor() {
       super();
       this.label = 'Mill';
       this.name = 'mill';
@@ -151,7 +152,7 @@ export default (forceUpdate, globalState) => {
       }
       return _.range(this.target.steps).map(step => (
         {label: step, active: this.step <= step}
-      ))
+      ));
     }
   }
 

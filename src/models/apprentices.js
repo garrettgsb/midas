@@ -50,12 +50,12 @@ export default class Apprentice {
   }
 
   tick(now) {
-      if (now > this.lastTick + this.tickLength) {
-          this.lastTick = now;
-          if (this.can_act) this.act();
-          return true;
-      }
-      return false;
+    if (now > this.lastTick + this.tickLength) {
+      this.lastTick = now;
+      if (this.can_act) this.act();
+      return true;
+    }
+    return false;
   }
 
 }
