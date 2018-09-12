@@ -74,13 +74,6 @@ class App extends React.Component {
     this.setState({ pending_assignment: [...this.state.pending_assignment, fn] });
   }
 
-  componentWillUpdate() {
-    const [current, max] = [this.state.resources.gold.quantity, this.state.maxGold];
-    if (Math.max(current, max) !== this.state.maxGold) {
-      this.setState({ maxGold: Math.max(current, max) });
-    }
-  }
-
   render() {
     return (
       <div className='container-v'>
