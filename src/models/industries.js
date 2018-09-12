@@ -152,7 +152,7 @@ export default (forceUpdate, globalState) => {
       }
       return _.range(this.target.steps).map(step => (
         {label: step, active: this.step <= step}
-      ))
+      ));
     }
   }
 
@@ -231,7 +231,7 @@ export default (forceUpdate, globalState) => {
       // If you have the thalers, expand the reservoir by some random amount.
       if (this.canProspect) {
         this._reservoirSize += 100; // TODO: Different plan for figuring out how much to prospect
-        globalState.resources.thaler.quantity -= this.prospectCost
+        globalState.resources.thaler.quantity -= this.prospectCost;
       }
     }
 
