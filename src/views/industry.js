@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
-import { Button, Counter, MineReservoirFillBar, FarmWaterFillBar } from './lib';
+import { Button, MineReservoirFillBar, FarmWaterFillBar } from './lib';
 
 export default class Industries extends React.Component {
   constructor(props) {
