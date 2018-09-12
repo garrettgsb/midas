@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Counter } from './lib';
+import { Button } from './lib';
 
 
 const ApprenticeBuyPanel = ({onHire}) => {
@@ -11,11 +11,11 @@ class ApprenticePanel extends React.Component {
     var appr = this.props.apprentice;
     var assignButton;
     if (this.props.currentAssignee === appr.id) {
-      assignButton = <Button label="Save Assignment" onClick={this.props.onToggleAssign} />
+      assignButton = <Button label="Save Assignment" onClick={this.props.onToggleAssign} />;
     } else if (this.props.currentAssignee) {
-      assignButton = <Button label="Assign" inactive={true} />
+      assignButton = <Button label="Assign" inactive={true} />;
     } else {
-      assignButton = <Button label="Assign" onClick={this.props.onToggleAssign} />
+      assignButton = <Button label="Assign" onClick={this.props.onToggleAssign} />;
     }
     return (
       <div className='panel'>
@@ -45,6 +45,5 @@ export default class Help extends React.Component {
         </div>
       </div>
     );
-  };
+  }
 }
-

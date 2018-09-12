@@ -15,7 +15,7 @@ const Resources = ({resources, transmute, amAssigning, assign_append}) => {
               resources={resources}
               transmute={transmute}
               assigning={amAssigning ? assign_append : undefined}
-            />
+            />;
           })
         }
       </div>
@@ -78,14 +78,14 @@ class ResourcePanel extends React.Component {
             <select ref='transTarget' onChange={(e) => this.dropdownChange(e)}>
               {Object.entries(resource.transmutationTargets).map(target => {
                 const [name, value] = target;
-                return (<option key={name} value={name}>{`${resources[name].label} (${value})`}</option>)
+                return (<option key={name} value={name}>{`${resources[name].label} (${value})`}</option>);
               })}
             </select>
           </div>
         }
       </div>
     );
-  };
+  }
 }
 
 export default Resources;

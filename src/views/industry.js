@@ -1,4 +1,3 @@
-import autobind from 'autobind-decorator';
 import React from 'react';
 import { Button, MineReservoirFillBar, FarmWaterFillBar } from './lib';
 
@@ -14,7 +13,7 @@ export default class Industries extends React.Component {
       mine: MinePanel,
       mill: MillPanel,
       farm: FarmPanel,
-    }
+    };
     return (
       <div className='container-v'>
         <h1>Industries</h1>
@@ -107,7 +106,7 @@ const TargetlessIndustryPanel = ({model, dropdownChange}) => {
       </div>
     </div>
   );
-}
+};
 
 const UnboughtIndustryPanel = ({model}) => {
   return (
@@ -119,7 +118,7 @@ const UnboughtIndustryPanel = ({model}) => {
         onClick={model.upgrade}
       />
     </div>
-  )
+  );
 };
 
 const IndustryPanelLayout = ({model, children}) => {
@@ -138,14 +137,13 @@ const IndustryPanelLayout = ({model, children}) => {
           {children}
         </div>
         { model.possibleTargets ? (
-            <select onChange={(e) => model.handleTargetChange(e.target.value)} value={model.target.name} >
-              {model.possibleTargets.map(({name, label}) => (
-                <option key={name} value={name}>{label}</option>
-              ))}
-            </select>
+          <select onChange={(e) => model.handleTargetChange(e.target.value)} value={model.target.name} >
+            {model.possibleTargets.map(({name, label}) => (
+              <option key={name} value={name}>{label}</option>
+            ))}
+          </select>
         ) : null}
       </div>
     );
   }
-}
-
+};

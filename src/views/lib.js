@@ -40,10 +40,10 @@ const FillBar = ({ quantity, max, startColor, endColor }) => {
 };
 
 
-const MineReservoirFillBar = ({quantity, max}) => 
-  <FillBar quantity={quantity} max={max} startColor={{r:50, g:180, b:100}} />
+const MineReservoirFillBar = ({quantity, max}) =>
+  <FillBar quantity={quantity} max={max} startColor={{r:50, g:180, b:100}} />;
 
-const FarmWaterFillBar = ({quantity, max}) => 
-  <FillBar quantity={quantity} max={max} startColor={{r:24, g:126, b:3}} endColor={{r:204, g:204, b:0}} />
+const FarmWaterFillBar = ({quantity, max}) =>
+  <FillBar quantity={quantity} max={max} startColor={{r:24, g:126, b:3}} endColor={{r:204, g:204, b:0}} />;
 
 export { Button, Counter, FillBar, MineReservoirFillBar, FarmWaterFillBar, };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Counter } from './lib';
+import { Button } from './lib';
 
 export default class Shop extends React.Component {
   render() {
@@ -18,8 +18,8 @@ export default class Shop extends React.Component {
         </div>
       </div>
     );
-  };
-};
+  }
+}
 
 const ShopItem = ({item}) => {
   const {name, label, description, price} = item;
