@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button, Counter } from './lib';
 
 export default class Alchemy extends React.Component {
   render() {
@@ -11,5 +10,5 @@ export default class Alchemy extends React.Component {
         </div>
       </div>
     );
-  };
-};
+  }
+}

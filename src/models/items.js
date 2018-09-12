@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default (forceUpdate, globalState) => {
 
   class Item {
@@ -37,12 +39,12 @@ export default (forceUpdate, globalState) => {
 
   var items_array = [
     new Item({
-      label: 'Lead Catalyst', 
+      label: 'Lead Catalyst',
       description: 'Reduces the amount of lead required to produce gold',
       price: (tier => ({gold: [3, 9, 81, 6561, 43046721][tier]})),
     }),
     new Item({
-      label: 'Metal Detector', 
+      label: 'Metal Detector',
       description: 'Find more lead each time you search',
       price: (tier => ({gold: 5**tier})),
     }),
@@ -54,4 +56,4 @@ export default (forceUpdate, globalState) => {
   }
   return items_object;
 
-}
+};
