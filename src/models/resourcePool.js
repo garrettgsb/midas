@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 export default (forceUpdate, globalState) => {
 
-  const legalResourceNames = ['thalers', 'gold', 'lead', 'coffee', 'steel', 'iron', 'tin', 'spinach', 'elo'];
+  const legalResourceNames = ['gold', 'lead', 'coffee', 'steel', 'iron', 'tin', 'spinach', 'elo'];
 
   class ResourcePoolEntry {
     constructor(name, quantity, parentPool) {
@@ -38,7 +38,7 @@ export default (forceUpdate, globalState) => {
 
     set quantity(x) {
       // TODO: remove this entire setter after proof-reading to ensure that no-one is assigning to globalState.resources.XYZ
-      console.trace('someone is using the deprecated setter for resource quantity!');
+      console.trace('someone is using the deprecated setter for resource quantity!'); // eslint-disable-line no-console
       this.set(x, 'deprecated setter');
     }
   }
@@ -47,7 +47,7 @@ export default (forceUpdate, globalState) => {
     constructor(maxCapacity = Infinity, quantityMap = {}) {
       this.maxCapacity = maxCapacity;
       this.entries = [];
-      for (let resourceName of legalResourceNames) {
+      for (let resourceName of ['thalers', ...legalResourceNames]) {
         this[resourceName] = new ResourcePoolEntry(resourceName, quantityMap[resourceName] || 0, this);
         this.entries.push(this[resourceName]);
       }
@@ -61,11 +61,12 @@ export default (forceUpdate, globalState) => {
     }
   }
 
-  ResourcePool.resourceNames = legalResourceNames;
+  ResourcePool.resourceNames = new Set(legalResourceNames);
+  ResourcePool.allResourceNames = new Set(['thalers', ...legalResourceNames]);
 
   return ResourcePool;
 
-}
+};
 
 ////// TODO: get unit testing working and move this (or something better) to a unit test.
 // rp = new ResourcePool(10);

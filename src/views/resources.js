@@ -7,12 +7,11 @@ const Resources = ({resources}) => {
       <h1>Resources</h1>
       <div className='container'>
         {resources.entries.map(resourceEntry => {
-            return <ResourcePanel
-              key={resourceEntry.name}
-              resource={resourceEntry}
-            />
-          })
-        }
+          return <ResourcePanel
+            key={resourceEntry.name}
+            resource={resourceEntry}
+          />;
+        })}
       </div>
     </div>
   );
