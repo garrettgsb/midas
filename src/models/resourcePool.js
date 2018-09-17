@@ -18,7 +18,11 @@ export default (forceUpdate, globalState) => {
 
     delta(quantity, tag) {
       const mostExtremeDebit = -1 * this._quantity;
-      const mostExtremeCredit = this.parentPool.spareCapacity;
+      const mostExtremeCredit = (
+        this.name === 'thalers' ?
+        Infinity :
+        this.parentPool.spareCapacity
+      );
       quantity = _.clamp(quantity, mostExtremeDebit, mostExtremeCredit);
       this._quantity += quantity;
       forceUpdate();
@@ -67,19 +71,3 @@ export default (forceUpdate, globalState) => {
   return ResourcePool;
 
 };
-
-////// TODO: get unit testing working and move this (or something better) to a unit test.
-// rp = new ResourcePool(10);
-// console.log(0, rp.tin.quantity);
-// rp.tin.delta(3, "income");
-// console.log(3, rp.tin.quantity);
-// rp.tin.delta(3, "income");
-// console.log(6, rp.tin.quantity);
-// rp.tin.delta(-1, "taxation");
-// console.log(5, rp.tin.quantity);
-// rp.tin.delta(-7, "theft");
-// console.log(0, rp.tin.quantity);
-// rp.tin.delta(15);
-// console.log(10, rp.tin.quantity);
-// console.log(rp.tin.tagDeltas);
-// for(var entry of rp.entries) { console.log(entry.name, entry.label, entry.quantity); }

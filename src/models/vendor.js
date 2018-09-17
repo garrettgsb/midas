@@ -1,6 +1,5 @@
 const _ = require('lodash');
 
-
 export default (forceUpdate, globalState, ResourcePool) => {
 
   function _validResourceName(resource) {
@@ -20,12 +19,8 @@ export default (forceUpdate, globalState, ResourcePool) => {
   }
 
   class Vendor extends ResourcePool {
-    constructor() {
-      super();
-      this.setBuyPrice = (resource, price) => this._setPrice('buyPrice', resource, price);
-      this.setSellPrice = (resource, price) => this._setPrice('sellPrice', resource, price);
-      this.unsetBuyPrice = (resource, price) => this._setPrice('buyPrice', resource);
-      this.unsetSellPrice = (resource, price) => this._setPrice('sellPrice', resource);
+    constructor(maxCapacity = Infinity) {
+      super(maxCapacity);
     }
 
     setBuyPrice(resource, price)    { _setPrice(this, 'buyPrice', resource, price); }
@@ -55,15 +50,15 @@ export default (forceUpdate, globalState, ResourcePool) => {
       const minQuantity = -1 * this[resource].quantity;
       const realQuantity = _.clamp(quantity, minQuantity, maxQuantity);
       if (!dryRun) {
-        this[resource].quantity += realQuantity;
-        this.thalers.quantity -= realQuantity * price;
+        this[resource].delta(realQuantity, "vending");            // Vendors gonna vend
+        this.thalers.delta(-1 * realQuantity * price, "vending");
         forceUpdate();
       }
       return realQuantity;
     }
 
     doSell(resource, quantity, price, dryRun = false) {
-      this.doBuy(resource, -quantity, price, dryRun);
+      return - this.doBuy(resource, -quantity, price, dryRun);
     }
 
   }
