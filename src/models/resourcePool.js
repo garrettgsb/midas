@@ -16,7 +16,9 @@ export default (forceUpdate, globalState) => {
       return _.startCase(this.name);
     }
 
-    delta(quantity, tag) {
+    delta(quantity, tag, dryRun = false) {
+      // Nota Bene: maybe we want an allOrNothing flag, which if true, would limit the return value
+      // to be either 0 or quantity
       const mostExtremeDebit = -1 * this._quantity;
       const mostExtremeCredit = (
         this.name === 'thalers' ?
@@ -24,10 +26,12 @@ export default (forceUpdate, globalState) => {
         this.parentPool.spareCapacity
       );
       quantity = _.clamp(quantity, mostExtremeDebit, mostExtremeCredit);
-      this._quantity += quantity;
-      forceUpdate();
-      let tag_suffix = quantity < 0 ? "-DOWN" : "-UP";
-      this.tagDeltas[tag + tag_suffix] = (this.tagDeltas[tag + tag_suffix] || 0) + quantity;
+      if (!dryRun) {
+        this._quantity += quantity;
+        forceUpdate();
+        let tag_suffix = quantity < 0 ? "-DOWN" : "-UP";
+        this.tagDeltas[tag + tag_suffix] = (this.tagDeltas[tag + tag_suffix] || 0) + quantity;
+      }
       return quantity;
     }
 
@@ -45,6 +49,7 @@ export default (forceUpdate, globalState) => {
       console.trace('someone is using the deprecated setter for resource quantity!'); // eslint-disable-line no-console
       this.set(x, 'deprecated setter');
     }
+
   }
 
   class ResourcePool {
@@ -58,10 +63,24 @@ export default (forceUpdate, globalState) => {
     }
 
     get spareCapacity() {
-      return (
-        this.maxCapacity - 
-        legalResourceNames.map(name => this[name].quantity).reduce((a, b) => a + b, 0)
-      );
+      const usedCapacity = legalResourceNames.map(name => this[name].quantity).reduce((a, b) => a + b, 0)
+      return this.maxCapacity - usedCapacity;
+    }
+
+    transferTo(otherRP, resource, quantity, tag = "unidentified flying transfer", dryRun = false) {
+      const other_side_max = otherRP[resource].delta(quantity, tag, true);
+      const this_side_max = -1 * this[resource].delta(-1 * quantity, tag, true);
+      const mutual_max = quantity > 0 ? Math.min(other_side_max, this_side_max) : Math.max(other_side_max, this_side_max);
+      if (!dryRun) {
+        otherRP[resource].delta(mutual_max, tag);
+        this[resource].delta(-mutual_max, tag);
+      }
+      return mutual_max;
+    }
+
+    transferFrom(otherRP, resource, quantity, tag = "unidentified flying transfer", dryRun = false) {
+      // swap `other` with `this`
+      return otherRP.transferTo(this, resource, quantity, tag, dryRun);
     }
   }
 
