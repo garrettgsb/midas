@@ -23,16 +23,6 @@ button.assigning {
   border: 3px solid red;
 }
 
-select   {
-  border: 1px solid cornflowerblue;
-  border-radius: 0;
-  box-shadow: 1px 1px 4px #224;
-  margin: 8px 4px;
-  padding: 4px 6px;
-  transition: 0.5s;
-  width: 100%;
-}
-
 .container {
   display: flex;
   flex-direction: row;
@@ -162,4 +152,20 @@ select   {
   color: #99B;
   opacity: 0.5;
   transition: 0.5s;
+}
+
+.the-modal.hidden {
+  display: none;
+  transition: 0.2s
+}
+
+.the-modal {
+  align-content: center;
+  justify-content: center;
+  background-color: cadetblue;
+  display: flex;
+  height: 80%;
+  position: absolute;
+  width: 80%;
+  transition: 0.2s;
 }
