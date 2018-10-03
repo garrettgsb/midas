@@ -154,18 +154,14 @@ button.assigning {
   transition: 0.5s;
 }
 
-.the-modal.hidden {
-  display: none;
-  transition: 0.2s
-}
-
 .the-modal {
   align-content: center;
   justify-content: center;
   background-color: cadetblue;
   display: flex;
-  height: 80%;
+  height: 70%;
   position: absolute;
-  width: 80%;
+  width: 70%;
   transition: 0.2s;
+  margin: 10%;
 }

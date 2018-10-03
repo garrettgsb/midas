@@ -6,29 +6,38 @@ require('./styles/style.css');
 class App extends React.Component {
   constructor() {
     super();
-    this.toggleModal = () => this.setState(prev => ({ theModalIsOpen: !prev.theModalIsOpen }));
     this.state = {
       // Mock map objects
       items: [
-        { id: (''+Math.random()).slice(2,10), pos: { x: 10, y: 80 }, color: '#3399BB', icon: '🏠', clickAction: this.toggleModal, modalData: 'A house' },
-        { id: (''+Math.random()).slice(2,10), pos: { x: 60, y: 140 }, color: '#99BB33', icon: '⛪️', clickAction: this.toggleModal, modalData: 'A church' },
-        { id: (''+Math.random()).slice(2,10), pos: { x: 110, y: 40 }, color: '#BB3399', icon: '🏪', clickAction: this.toggleModal, modalData: 'A 24 store' },
+        { id: 12345, pos: { x: 10, y: 80 }, color: '#3399BB', icon: '🏠', 
+          clickAction: () => this.changeModalTo(12345),
+          modalData: 'A house'
+        },
+        { id: 333, pos: { x: 60, y: 140 }, color: '#99BB33', icon: '⛪️', 
+          clickAction: () => this.changeModalTo(333),
+          modalData: 'A church'
+        },
+        { id: 9000, pos: { x: 110, y: 40 }, color: '#BB3399', icon: '🏪', 
+          clickAction: () => this.changeModalTo(9000),
+          modalData: 'A 24 store'
+        },
       ],
-      theModalIsOpen: true,
+      modalTarget: null,
     };
   }
 
   @autobind
   changeModalTo(id) {
-
+    this.setState(prev => ({modalTarget: id === prev.modalTarget ? null : id}));
   }
 
   render() {
+    const modalItem = this.state.items.find(item => item.id === this.state.modalTarget);
     return (
       <div className='container'>
         <Map items={this.state.items} />
         <Sidebar items={this.state.items} />
-        <TheModal isOpen={this.state.theModalIsOpen} />
+        {this.state.modalTarget ? <TheModal item={modalItem} /> : null}
       </div>
     );
   }
@@ -37,7 +46,7 @@ class App extends React.Component {
 class Map extends React.Component {
   render() {
     return (
-      <svg viewBox="0 0 80 400" xmlns="http://www.w3.org/2000/svg" style={{width: '80%', height: 400}}>
+      <svg viewBox="0 0 80 400" xmlns="http://www.w3.org/2000/svg" style={{width: '80%', height: 400, border: '1px solid black'}}>
         { this.props.items.map(item => <MapIcon key={item.id} item={item}/>) }
       </svg>
     );
@@ -46,7 +55,7 @@ class Map extends React.Component {
 
 class MapIcon extends React.Component {
   render() {
-    const { color, icon, pos, clickAction } = this.props.item;
+    const { id, color, icon, pos, clickAction } = this.props.item;
     return (
       <circle onClick={clickAction} cx={pos.x} cy={pos.y} r="10" style={{ fill: color }}>
         {icon} {/* TODO: Make this show up */}
@@ -58,8 +67,8 @@ class MapIcon extends React.Component {
 class Sidebar extends React.Component {
   render() {
     return (
-      <div className='container-v'>
-        { this.props.items.map(item => <SidebarItem item={item} />) }
+      <div className='container-v' style={{border: '1px solid black'}}>
+        { this.props.items.map(item => <SidebarItem key={item.id} item={item} />) }
       </div>
     )
   }
@@ -67,10 +76,10 @@ class Sidebar extends React.Component {
 
 class SidebarItem extends React.Component {
   render() {
-    const { color, icon, clickAction } = this.props.item;
+    const { id, color, icon, clickAction, modalData } = this.props.item;
     return (
       <div onClick={clickAction} className='sidebar-item' style={{backgroundColor: color, minWidth: '100px'}}>
-        <p>🐢</p>
+        <p>{icon} {modalData} {icon}</p>
       </div>
     );
   }
@@ -78,9 +87,10 @@ class SidebarItem extends React.Component {
 
 class TheModal extends React.Component {
   render() {
+    const { item } = this.props;
     return (
-      <div className={`the-modal ${this.props.isOpen ? '' : 'hidden'}`}>
-        <p>🐢</p>
+      <div className={`the-modal`} style={{backgroundColor: item.color}}>
+        <h1>{item.modalData}</h1>
       </div>
     )
   }
