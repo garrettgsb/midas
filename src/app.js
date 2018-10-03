@@ -9,15 +9,15 @@ class App extends React.Component {
     this.state = {
       // Mock map objects
       items: [
-        { id: 12345, pos: { x: 10, y: 80 }, color: '#3399BB', icon: '🏠', 
+        { id: 12345, pos: { x: 10, y: 80 }, color: '#3399BB', icon: '🏠',
           clickAction: () => this.changeModalTo(12345),
           modalData: 'A house'
         },
-        { id: 333, pos: { x: 60, y: 140 }, color: '#99BB33', icon: '⛪️', 
+        { id: 333, pos: { x: 60, y: 140 }, color: '#99BB33', icon: '⛪️',
           clickAction: () => this.changeModalTo(333),
           modalData: 'A church'
         },
-        { id: 9000, pos: { x: 110, y: 40 }, color: '#BB3399', icon: '🏪', 
+        { id: 9000, pos: { x: 110, y: 40 }, color: '#BB3399', icon: '🏪',
           clickAction: () => this.changeModalTo(9000),
           modalData: 'A 24 store'
         },
@@ -34,8 +34,8 @@ class App extends React.Component {
   render() {
     const modalItem = this.state.items.find(item => item.id === this.state.modalTarget);
     return (
-      <div className='container'>
-        <Map items={this.state.items} />
+      <div className='game-main'>
+        <Map items={this.state.items} onClick={this.changeModalTo.bind(null, null)} />
         <Sidebar items={this.state.items} />
         {this.state.modalTarget ? <TheModal item={modalItem} /> : null}
       </div>
@@ -46,9 +46,11 @@ class App extends React.Component {
 class Map extends React.Component {
   render() {
     return (
-      <svg viewBox="0 0 80 400" xmlns="http://www.w3.org/2000/svg" style={{width: '80%', height: 400, border: '1px solid black'}}>
-        { this.props.items.map(item => <MapIcon key={item.id} item={item}/>) }
-      </svg>
+      <div className='map'>
+        <svg className='map-svg' onClick={this.props.onClick} xmlns="http://www.w3.org/2000/svg">
+          { this.props.items.map(item => <MapIcon key={item.id} item={item}/>) }
+        </svg>
+      </div>
     );
   }
 }
@@ -57,7 +59,14 @@ class MapIcon extends React.Component {
   render() {
     const { id, color, icon, pos, clickAction } = this.props.item;
     return (
-      <circle onClick={clickAction} cx={pos.x} cy={pos.y} r="10" style={{ fill: color }}>
+      <circle onClick={(e) => {
+        e.stopPropagation();
+        clickAction();
+      }}
+      cx={pos.x}
+      cy={pos.y}
+      r="10"
+      style={{ fill: color }}>
         {icon} {/* TODO: Make this show up */}
       </circle>
     )
@@ -67,7 +76,7 @@ class MapIcon extends React.Component {
 class Sidebar extends React.Component {
   render() {
     return (
-      <div className='container-v' style={{border: '1px solid black'}}>
+      <div className='sidebar container-v' style={{border: '1px solid black'}}>
         { this.props.items.map(item => <SidebarItem key={item.id} item={item} />) }
       </div>
     )
