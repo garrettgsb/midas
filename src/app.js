@@ -9,15 +9,15 @@ class App extends React.Component {
     this.state = {
       // Mock map objects
       items: [
-        { id: 12345, pos: { x: 10, y: 80 }, color: '#3399BB', icon: '🏠',
+        { id: 12345, pos: { x: 150, y: 280 }, color: '#3399BB', icon: '🏠',
           clickAction: () => this.changeModalTo(12345),
           modalData: 'A house'
         },
-        { id: 333, pos: { x: 60, y: 140 }, color: '#99BB33', icon: '⛪️',
+        { id: 333, pos: { x: 460, y: 140 }, color: '#99BB33', icon: '⛪️',
           clickAction: () => this.changeModalTo(333),
           modalData: 'A church'
         },
-        { id: 9000, pos: { x: 110, y: 40 }, color: '#BB3399', icon: '🏪',
+        { id: 9000, pos: { x: 860, y: 440 }, color: '#BB3399', icon: '🏪',
           clickAction: () => this.changeModalTo(9000),
           modalData: 'A 24 store'
         },
