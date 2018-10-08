@@ -1,7 +1,34 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
+import MineGame from './modules/mineGame.js';
 
 require('./styles/style.css');
+
+// TODO: This is a placeholder object for some other part of the app,
+// maybe like some of those slick models that we've been working on.
+// Or maybe a Redux store, if we're into that.
+
+const somewhereElse = {
+  mine: {
+    resources: [
+      {
+        label: 'Gold',
+        icon: '🌕',
+        quantity: 0,
+      },
+      {
+        label: 'Silver',
+        icon: '☄️',
+        quantity: 0,
+      },
+      {
+        label: 'Aluminium',
+        icon: '📎',
+        quantity: 0,
+      },
+    ]
+  }
+};
 
 class App extends React.Component {
   constructor() {
@@ -11,15 +38,16 @@ class App extends React.Component {
       items: [
         { id: 12345, pos: { x: 150, y: 280 }, color: '#3399BB', icon: '🏠',
           clickAction: () => this.changeModalTo(12345),
-          modalData: 'A house'
+          buttonLabel: 'A house'
         },
         { id: 333, pos: { x: 460, y: 140 }, color: '#99BB33', icon: '⛪️',
           clickAction: () => this.changeModalTo(333),
-          modalData: 'A church'
+          buttonLabel: 'A church'
         },
-        { id: 9000, pos: { x: 860, y: 440 }, color: '#BB3399', icon: '🏪',
+        { id: 9000, pos: { x: 860, y: 440 }, color: '#BB3399', icon: '☢️',
           clickAction: () => this.changeModalTo(9000),
-          modalData: 'A 24 store'
+          buttonLabel: 'Mine',
+          modal: MineModal,
         },
       ],
       modalTarget: null,
@@ -69,7 +97,7 @@ class MapIcon extends React.Component {
       style={{ fill: color }}>
         {icon} {/* TODO: Make this show up */}
       </circle>
-    )
+    );
   }
 }
 
@@ -85,10 +113,10 @@ class Sidebar extends React.Component {
 
 class SidebarItem extends React.Component {
   render() {
-    const { id, color, icon, clickAction, modalData } = this.props.item;
+    const { id, color, icon, clickAction, buttonLabel } = this.props.item;
     return (
       <div onClick={clickAction} className='sidebar-item' style={{backgroundColor: color, minWidth: '100px'}}>
-        <p>{icon} {modalData} {icon}</p>
+        <p>{icon} {buttonLabel} {icon}</p>
       </div>
     );
   }
@@ -97,11 +125,47 @@ class SidebarItem extends React.Component {
 class TheModal extends React.Component {
   render() {
     const { item } = this.props;
+    if (item.modal) {
+      const Modal = React.createElement(item.modal);
+      return (
+        <div className={`the-modal`} style={{backgroundColor: item.color}}>
+          {Modal}
+        </div>
+      );
+    }
     return (
       <div className={`the-modal`} style={{backgroundColor: item.color}}>
-        <h1>{item.modalData}</h1>
+        <h1>{item.buttonLabel}</h1>
       </div>
     )
+  }
+}
+
+
+class MineModal extends React.Component {
+  render() {
+    const mine = somewhereElse.mine;
+    return (
+      <div className='mine-modal'>
+        <div className='header'></div>
+        <div className='resource-list'>
+          { mine.resources.map(resource => {
+            return (
+              <div key={resource.icon} className='resource-list-item'>
+                <div>{resource.icon}</div>
+                <div>{resource.label}</div>
+                <div>{resource.quantity}</div>
+              </div>
+            );
+          })}
+
+        </div>
+        <div className='transfer-area'>
+          <img className='wagon' src='wagon.png'/>
+        </div>
+        <MineGame/>
+      </div>
+    );
   }
 }
 
