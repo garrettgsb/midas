@@ -7,7 +7,6 @@ require('./styles/style.css');
 // TODO: This is a placeholder object for some other part of the app,
 // maybe like some of those slick models that we've been working on.
 // Or maybe a Redux store, if we're into that.
-
 const somewhereElse = {
   mine: {
     resources: [
@@ -38,11 +37,11 @@ class App extends React.Component {
       items: [
         { id: 12345, pos: { x: 150, y: 280 }, color: '#3399BB', icon: '🏠',
           clickAction: () => this.changeModalTo(12345),
-          buttonLabel: 'A house'
+          buttonLabel: 'A house' // We probably don't actually have a house
         },
         { id: 333, pos: { x: 460, y: 140 }, color: '#99BB33', icon: '⛪️',
           clickAction: () => this.changeModalTo(333),
-          buttonLabel: 'A church'
+          buttonLabel: 'A church' // We probably don't actually have a church
         },
         { id: 9000, pos: { x: 860, y: 440 }, color: '#BB3399', icon: '☢️',
           clickAction: () => this.changeModalTo(9000),
@@ -75,6 +74,7 @@ class Map extends React.Component {
   render() {
     return (
       <div className='map'>
+        { /* I think we probably want to eventually move away from SVG, but this is fine. */ }
         <svg className='map-svg' onClick={this.props.onClick} xmlns="http://www.w3.org/2000/svg">
           { this.props.items.map(item => <MapIcon key={item.id} item={item}/>) }
         </svg>
@@ -107,7 +107,7 @@ class Sidebar extends React.Component {
       <div className='sidebar container-v' style={{border: '1px solid black'}}>
         { this.props.items.map(item => <SidebarItem key={item.id} item={item} />) }
       </div>
-    )
+    );
   }
 }
 
@@ -137,7 +137,7 @@ class TheModal extends React.Component {
       <div className={`the-modal`} style={{backgroundColor: item.color}}>
         <h1>{item.buttonLabel}</h1>
       </div>
-    )
+    );
   }
 }
 
@@ -161,6 +161,7 @@ class MineModal extends React.Component {
 
         </div>
         <div className='transfer-area'>
+          { /* TODO: You can exchange resources with wagons here. */ }
           <img className='wagon' src='wagon.png'/>
         </div>
         <MineGame/>

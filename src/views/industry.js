@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, MineReservoirFillBar, FarmWaterFillBar } from './lib';
 
+// TODO: Toss maybe most of this file when it's clear what we don't want.
+
 export default class Industries extends React.Component {
   constructor(props) {
     super(props);
