@@ -50,7 +50,7 @@ class App extends React.Component {
       <div className='game-main'>
         <Map items={this.state.economy.getMapItems()} onClick={this.changeModalTo} />
         <Sidebar items={this.state.economy.getSidebarItems()} onClick={this.changeModalTo} />
-        {this.state.modalTarget ? <TheModal item={modalItem} /> : null}
+        {this.state.modalTarget ? <TheModal eso={modalItem} /> : null}
       </div>
     );
   }
@@ -112,18 +112,18 @@ class SidebarItem extends React.Component {
 
 class TheModal extends React.Component {
   render() {
-    const { item } = this.props;
-    if (item.modal) {
-      const Modal = React.createElement(item.modal);
+    const { eso } = this.props;
+    const ContainedView = eso.getView && eso.getView();
+    if (ContainedView) {
       return (
-        <div className={`the-modal`} style={{backgroundColor: item.color}}>
-          {Modal}
+        <div className={`the-modal`} style={{backgroundColor: eso.color}}>
+          <ContainedView />
         </div>
       );
     }
     return (
-      <div className={`the-modal`} style={{backgroundColor: item.color}}>
-        <h1>{item.buttonLabel}</h1>
+      <div className={`the-modal`} style={{backgroundColor: eso.color}}>
+        <h1>{eso.buttonLabel}</h1>
       </div>
     );
   }
