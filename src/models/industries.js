@@ -57,13 +57,13 @@ export default (forceUpdate, globalState) => {
     }
 
     get canUpgrade() {
-      return globalState.resources.thaler.quantity >= this.upgradeCost;
+      return globalState.resources.thalers.quantity >= this.upgradeCost;
     }
 
     @autobind
     upgrade() {
       if (this.canUpgrade) {
-        globalState.resources.thaler.quantity -= this.upgradeCost;
+        globalState.resources.thalers.delta(-this.upgradeCost, "upgrade-industry");
         this.tier += 1;
         forceUpdate();
       }
@@ -140,7 +140,7 @@ export default (forceUpdate, globalState) => {
       if (this.step >= this.target.steps) {
         let targetName = this.target.name;
         this._produced[targetName] = (this._produced[targetName] || 0) + this.target.payout;
-        globalState.resources[targetName].quantity += this.target.payout;
+        globalState.resources[targetName].delta(this.target.payout, "harvest");
         this.step = 0;
       }
       forceUpdate();
@@ -213,7 +213,7 @@ export default (forceUpdate, globalState) => {
 
       if (Math.random() < _miningProb) {
         this._produced[targetName] = (this._produced[targetName] || 0) + _yield;
-        globalState.resources[targetName].quantity += _yield;
+        globalState.resources[targetName].delta(_yield, "harvest");
         // TODO: we talked about having some chance of other minerals
       } else {
         // do we do anything when there's no mineral yield?
@@ -223,7 +223,7 @@ export default (forceUpdate, globalState) => {
 
     get canProspect() {
       // TODO: I don't think this is right.
-      return globalState.resources.thaler.quantity >= this.prospectCost;
+      return globalState.resources.thalers.quantity >= this.prospectCost;
     }
 
     @autobind
@@ -231,7 +231,7 @@ export default (forceUpdate, globalState) => {
       // If you have the thalers, expand the reservoir by some random amount.
       if (this.canProspect) {
         this._reservoirSize += 100; // TODO: Different plan for figuring out how much to prospect
-        globalState.resources.thaler.quantity -= this.prospectCost;
+        globalState.resources.thalers.delta(-this.prospectCost, "prospecting");
       }
     }
 
@@ -275,7 +275,7 @@ export default (forceUpdate, globalState) => {
         return;
       }
       this._produced[this.target.name] = (this._produced[this.target.name] || 0) + this._yield;
-      globalState.resources[this.target.name].quantity += this._yield;
+      globalState.resources[this.target.name].delta(this._yield, "harvest");
       forceUpdate();
     }
 

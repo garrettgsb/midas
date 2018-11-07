@@ -1,94 +1,170 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
-
-import Apprentice from './models/apprentices.js';
-import bind_industries from './models/industries';
-import bind_items from './models/items';
-import bind_resources from './models/resources';
-
-import Debug from './views/debug.js';
-import Resources from './views/resources';
-import Industry from './views/industry';
+import MineGame from './modules/mineGame.js';
 
 require('./styles/style.css');
 
-window.debug = window.debug || { hax: true };      // debugging hackery
+// TODO: This is a placeholder object for some other part of the app,
+// maybe like some of those slick models that we've been working on.
+// Or maybe a Redux store, if we're into that.
+const somewhereElse = {
+  mine: {
+    resources: [
+      {
+        label: 'Gold',
+        icon: '🌕',
+        quantity: 0,
+      },
+      {
+        label: 'Silver',
+        icon: '☄️',
+        quantity: 0,
+      },
+      {
+        label: 'Aluminium',
+        icon: '📎',
+        quantity: 0,
+      },
+    ]
+  }
+};
 
 class App extends React.Component {
   constructor() {
     super();
-    const fu = this.forceUpdate.bind(this);
     this.state = {
-      RPOT: new RelentlessPassageOfTime(fu),
-      resources: {},
-      items: {},
-      industries: [],
-      apprentices: [],
-      maxGold: 0,
-      amAssigning: false,
+      // Mock map objects
+      items: [
+        { id: 12345, pos: { x: 150, y: 280 }, color: '#3399BB', icon: '🏠',
+          clickAction: () => this.changeModalTo(12345),
+          buttonLabel: 'A house' // We probably don't actually have a house
+        },
+        { id: 333, pos: { x: 460, y: 140 }, color: '#99BB33', icon: '⛪️',
+          clickAction: () => this.changeModalTo(333),
+          buttonLabel: 'A church' // We probably don't actually have a church
+        },
+        { id: 9000, pos: { x: 860, y: 440 }, color: '#BB3399', icon: '☢️',
+          clickAction: () => this.changeModalTo(9000),
+          buttonLabel: 'Mine',
+          modal: MineModal,
+        },
+      ],
+      modalTarget: null,
     };
-    this.state.items = bind_items(fu, this.state);
-    this.state.resources = bind_resources(fu, this.state);
-    this.state.industries = bind_industries(fu, this.state);
-    this.state.resources.lead.quantity = 5;
-    this.state.resources.thaler.quantity = 5;
-    this.state.RPOT.run();
-
-    // debugging hackery
-    window.globalState = this.state;
   }
 
   @autobind
-  hireApprentice() {
-    this.setState({ apprentices: [...this.state.apprentices, new Apprentice(this.state.RPOT)] });
-  }
-
-  transmute(from, to) {
-    if (from.transmute(to)) {
-      to.quantity += 1;
-    }
-  }
-
-  @autobind
-  assign_toggle(appr) {
-    if (!this.state.amAssigning) {
-      this.setState({
-        amAssigning: appr,
-        pending_assignment: [],
-      });
-    } else {
-      this.assign_finish(appr, this.state.pending_assignment);
-      this.setState({
-        amAssigning: false,
-        pending_assignment: [],
-      });
-    }
-  }
-
-  assign_finish(appr, proposed_assignments) {
-    appr.assign(proposed_assignments);
-  }
-
-  @autobind
-  assign_append(fn) {
-    this.setState({ pending_assignment: [...this.state.pending_assignment, fn] });
+  changeModalTo(id) {
+    this.setState(prev => ({modalTarget: id === prev.modalTarget ? null : id}));
   }
 
   render() {
+    const modalItem = this.state.items.find(item => item.id === this.state.modalTarget);
     return (
-      <div className='container-v'>
-        { window.debug.hax && <Debug/> }
-        <Resources
-          amAssigning={this.state.amAssigning}
-          assign_append={this.assign_append}
-          resources={this.state.resources}
-          transmute={this.transmute}
-        />
-        <Industry
-          industries={this.state.industries}
-          resources={this.state.resources}
-          assigning={this.state.amAssigning ? this.assign_append : undefined}
-        />
+      <div className='game-main'>
+        <Map items={this.state.items} onClick={this.changeModalTo.bind(null, null)} />
+        <Sidebar items={this.state.items} />
+        {this.state.modalTarget ? <TheModal item={modalItem} /> : null}
+      </div>
+    );
+  }
+}
+
+class Map extends React.Component {
+  render() {
+    return (
+      <div className='map'>
+        { /* I think we probably want to eventually move away from SVG, but this is fine. */ }
+        <svg className='map-svg' onClick={this.props.onClick} xmlns="http://www.w3.org/2000/svg">
+          { this.props.items.map(item => <MapIcon key={item.id} item={item}/>) }
+        </svg>
+      </div>
+    );
+  }
+}
+
+class MapIcon extends React.Component {
+  render() {
+    const { id, color, icon, pos, clickAction } = this.props.item;
+    return (
+      <circle onClick={(e) => {
+        e.stopPropagation();
+        clickAction();
+      }}
+      cx={pos.x}
+      cy={pos.y}
+      r="10"
+      style={{ fill: color }}>
+        {icon} {/* TODO: Make this show up */}
+      </circle>
+    );
+  }
+}
+
+class Sidebar extends React.Component {
+  render() {
+    return (
+      <div className='sidebar container-v' style={{border: '1px solid black'}}>
+        { this.props.items.map(item => <SidebarItem key={item.id} item={item} />) }
+      </div>
+    );
+  }
+}
+
+class SidebarItem extends React.Component {
+  render() {
+    const { id, color, icon, clickAction, buttonLabel } = this.props.item;
+    return (
+      <div onClick={clickAction} className='sidebar-item' style={{backgroundColor: color, minWidth: '100px'}}>
+        <p>{icon} {buttonLabel} {icon}</p>
+      </div>
+    );
+  }
+}
+
+class TheModal extends React.Component {
+  render() {
+    const { item } = this.props;
+    if (item.modal) {
+      const Modal = React.createElement(item.modal);
+      return (
+        <div className={`the-modal`} style={{backgroundColor: item.color}}>
+          {Modal}
+        </div>
+      );
+    }
+    return (
+      <div className={`the-modal`} style={{backgroundColor: item.color}}>
+        <h1>{item.buttonLabel}</h1>
+      </div>
+    );
+  }
+}
+
+
+class MineModal extends React.Component {
+  render() {
+    const mine = somewhereElse.mine;
+    return (
+      <div className='mine-modal'>
+        <div className='header'></div>
+        <div className='resource-list'>
+          { mine.resources.map(resource => {
+            return (
+              <div key={resource.icon} className='resource-list-item'>
+                <div>{resource.icon}</div>
+                <div>{resource.label}</div>
+                <div>{resource.quantity}</div>
+              </div>
+            );
+          })}
+
+        </div>
+        <div className='transfer-area'>
+          { /* TODO: You can exchange resources with wagons here. */ }
+          <img className='wagon' src='wagon.png'/>
+        </div>
+        <MineGame/>
       </div>
     );
   }

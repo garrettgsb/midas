@@ -10,27 +10,12 @@ button {
   border-radius: 0;
   box-shadow: 1px 1px 4px #224;
   margin: 4px 4px;
-  padding: 4px 0;
+  padding: 4px 14px;
   transition: 0.5s;
-  width: 100%;
 }
 
 button:hover {
   box-shadow: 2px 2px 4px #446;
-}
-
-button.assigning {
-  border: 3px solid red;
-}
-
-select   {
-  border: 1px solid cornflowerblue;
-  border-radius: 0;
-  box-shadow: 1px 1px 4px #224;
-  margin: 8px 4px;
-  padding: 4px 6px;
-  transition: 0.5s;
-  width: 100%;
 }
 
 .container {
@@ -104,24 +89,6 @@ select   {
   }
 }
 
-.description {
-  font-size: 0.6em;
-  min-width: 100%;
-  width: 0;
-}
-
-.fields {
-  align-content: flex-start;
-  display: flex;
-  flex-direction: column;
-  padding: 10%;
-}
-
-.fields div {
-  align-content: flex-start;
-  display: flex;
-}
-
 .fillbar {
   align-items: flex-end;
   background: linear-gradient(to bottom, rgba(200,200,200,0.4), rgba(150,150,150,0.4), rgba(0, 0, 0, 0.4));
@@ -142,24 +109,91 @@ select   {
   font-size: 1em;
 }
 
-.price {
-  color: cornflowerblue;
-  margin: 3px;
-  text-shadow: 1px 1px 0 #224;
-}
-
-.shop-item {
-  align-items: center;
+.the-modal {
+  align-content: center;
+  justify-content: center;
+  background-color: cadetblue;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 10px;
+  height: 70%;
+  position: absolute;
+  width: 70%;
+  transition: 0.4s;
+  top: 0; left: 0; right: 0; bottom: 0;
+  margin: 10% auto;
+  border: 1px solid black;
+  box-shadow: 2px 2px 8px #222;
 }
 
-.inactive {
-  /* border: 0 solid #666; */
-  /* box-shadow: 0 0 0 black; */
-  color: #99B;
-  opacity: 0.5;
-  transition: 0.5s;
+.game-main {
+  display: flex;
+  width: 100%;
+  height: 85vh;
+}
+
+.map {
+  border: 1px solid black;
+  flex: 4;
+  height: inherit;
+}
+
+.map-svg {
+  background: linear-gradient(10deg, rgba(255,255,255,0.5), rgba(155,155,155,0.5) 100%);
+  width: 100%;
+  height: inherit;
+}
+
+.sidebar {
+  flex: 1;
+  margin: 0;
+}
+
+.mine-modal {
+  display: grid;
+  grid-template:
+  'header header header header resource-list'
+  'game-area game-area game-area game-area resource-list'
+  'game-area game-area game-area game-area resource-list'
+  'game-area game-area game-area game-area transfer-area'
+  'game-area game-area game-area game-area transfer-area';
+
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  > * {
+    border: 2px solid black;
+  }
+
+  > .header {
+    background-color: skyblue;
+    grid-area: header;
+  }
+
+  > .resource-list {
+    background-color: dodgerblue;
+    grid-area: resource-list;
+
+    > .resource-list-item {
+      background-color: antiquewhite;
+      border: 1px solid burlywood;
+      border-radius: 10px;
+      box-shadow: 4px 4px 8px #333;
+      display: flex;
+      justify-content: space-between;
+      padding: 15px;
+      margin: 5px;
+      text-align: left;
+    }
+  }
+
+  > .transfer-area {
+    background-color: lightskyblue;
+    display: flex;
+    justify-content: space-around;
+    grid-area: transfer-area;
+  }
+}
+
+.wagon {
+  width: 240px;
 }

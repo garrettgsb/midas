@@ -7,11 +7,11 @@ export default class Debug extends React.Component {
   }
 
   setThalersTo() {
-    window.globalState.resources.thaler.quantity = this.refs.thalerQuant.value;
+    window.globalState.resources.thalers.set(this.refs.thalerQuant.value, "DEBUG");
   }
 
   setGoldTo() {
-    window.globalState.resources.gold.quantity = this.refs.goldQuant.value;
+    window.globalState.resources.gold.set(this.refs.goldQuant.value, "DEBUG");
   }
 
   toggle() {
