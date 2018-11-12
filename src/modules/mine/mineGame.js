@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
 
-require('../styles/style.css');
+require('../../styles/style.css');
 require('./mineGame.css');
 
 export default class MineGame extends React.Component {
