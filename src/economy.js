@@ -3,9 +3,6 @@ import MineMezzo from './modules/mine/mezzo.js';
 
 import ResourcePool from './resourcePool.js';
 
-
-
-
 //      // Mock map objects
 //      // These were previously used to populate the list of dummy ESOs, in case we want that //      again.
 //      items: [
@@ -51,9 +48,10 @@ export default class Economy {
 }
 
 
-class IndustryESO extends ResourcePool {
+class IndustryESO {
   constructor(bullshit) {
-    super();
+    //super();
+    this.rp = new ResourcePool();
     if (bullshit === 'mine') {
       this.mezzo = new MineMezzo();
       this.name = "Mine";
