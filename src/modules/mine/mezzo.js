@@ -1,4 +1,5 @@
 import React from 'react';
+import autobind from 'autobind-decorator';
 
 import ResourcePool from '../../resourcePool';
 
@@ -22,6 +23,7 @@ export default class MineMezzo {
   overworldTick(sumT, deltaT, accumT) {  // returns processedT
   }
 
+  @autobind
   updateStrategySettings(key, value) {
     if (key === 'resource' && ResourcePool.resourceNames.includes(value)) {
       this.strategySettings.resource = value;
@@ -37,7 +39,7 @@ export default class MineMezzo {
     this.mgv = React.createElement(MineGameView, {
       mezzo: this,
       strategySettings: this.strategySettings,
-      setStrategyValue: this.updateStrategySettings.bind(this),
+      setStrategyValue: this.updateStrategySettings,
     });
 
     window.mgv = this.mgv;      // DIRTY HACK FOR DEBUGGING AND STUFF
