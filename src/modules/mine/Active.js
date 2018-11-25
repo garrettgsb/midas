@@ -1,29 +1,47 @@
 import React, {Component, Fragment} from 'react';
+import _ from 'lodash';
 import autobind from 'autobind-decorator';
+
+import RPOT from '../../lib/rpot';
+
+const rockTypes = [
+  { name: 'sky', color: 'skyblue', },
+  { name: 'sand', color: 'sandybrown', },
+];
+
+for (let rockID in rockTypes) { rockTypes[rockID].id = rockID; }
+
 
 export default class MineActiveReact extends Component {
 
   constructor(props) {
     super(props);
-    this.canvas = React.createRef();
+    this.canvasRef = React.createRef();
+    this.dim = { x: 600, y: 300 };
     this.init();
   }
 
+  get canvas() {
+    return this.canvasRef.current;
+  }
+
   componentDidMount () {
-    const ctx = this.canvas.current.getContext('2d');
+    const ctx = this.canvas.getContext('2d');
     if (ctx) {
+      window.addEventListener('mousedown', this.onClick);
       this.wake(ctx);
     } else {
-      console.log("can't wake up (wake me up inside)");
+      console.error("can't wake up (wake me up inside)");
     }
   }
 
   componentWillUnmount() {
+    window.removeEventListener('mousedown', this.onClick);
     this.sleep();
   }
 
   render() {
-    return (<canvas ref={this.canvas} style={{width: '800px', height: '600px'}} />);
+    return (<canvas ref={this.canvasRef} width={this.dim.x} height={this.dim.y} style={{width: this.dim.x + 'px', height: this.dim.y + 'px'}} />);
   }
 
 
@@ -33,45 +51,87 @@ export default class MineActiveReact extends Component {
     this.state = {
       ctx: null,
       running: false,
+      hsl: {h: 37, s: 100, l: 47},
+      field: _.times(this.dim.y, () => new Array(this.dim.x).fill(0)),
+      dirtyColumns: new Set(_.range(this.dim.x)),
     };
+    this.initField(this.state.field);
+    this.rpot = new RPOT();
+    this.rpot.subscribe(this);
   }
 
   wake(ctx) {
     this.state.ctx = ctx;
     this.state.running = true;
-    this.state.hsl = {h: 0, s: 0, l: 0};
-    this.doFrame();
+    this.renderFrame();
   }
 
   sleep() {
     this.state.running = false;
   }
 
-  @autobind
-  doFrame() {
-    if (!this.state.ctx) { return; }
-    //this.physics();
 
-    this.rainbowBack(this.state.ctx);
+  initField(field) {
+    for (let y in field) {
+      for (let x in field[y]) {
+        x = Number(x);
+        y = Number(y);
 
-    if (this.state.running) { requestAnimationFrame(this.doFrame); }
-  }
-
-
-  rainbowBack(ctx) {
-    this.state.hsl.h = (this.state.hsl.h + 1) % 360;
-
-    for (var i = 0; i < ctx.canvas.width; i++) {
-      let h = (this.state.hsl.h + i) % 360;
-      let s = 58;
-      let l = 66;
-      ctx.fillStyle = `hsl(${h}, 90%, 50%)`;
-      //console.log(h, ctx.fillStyle);
-      //ctx.fillStyle = `hsl(${h}, ${s}%, ${l}%)`;
-      ctx.fillRect(i, 0, 1, ctx.canvas.height);
+        field[y][x] = 1;
+        if (y < 30) {
+          field[y][x] = 0;
+        }
+        if (x === 10 && y === 10) {
+          field[y][x] = 1;
+        }
+      }
     }
   }
 
+  @autobind
+  onClick(event) {
+    if (event.target === this.canvas) {
+      event.preventDefault();
+      event.stopPropagation();
+      let x = event.offsetX;
+      for (var y = 0; y < this.canvas.height; y++) {
+        if (this.state.field[y][x]) {
+          this.state.field[y][x] = 0;
+          this.state.dirtyColumns.add(x);
+          break;
+        }
+      }
+    }
+  }
+
+  
+
+
+  tick() {
+  }
+
+  @autobind
+  renderFrame() {
+    let ctx = this.state.ctx;
+    if (!ctx) { return; }
+
+
+    for (var x = 0; x < ctx.canvas.width; x++) {
+      if (this.state.dirtyColumns.has(x)) {
+        ctx.fillStyle = rockTypes[0].color;
+        ctx.fillRect(x, 0, 1, ctx.canvas.height);
+        for (var y = 0; y < ctx.canvas.height; y++) {
+          if (this.state.field[y][x]) {
+            ctx.fillStyle = rockTypes[this.state.field[y][x]].color;
+            ctx.fillRect(x, y, 1, 1);
+          }
+        }
+        this.state.dirtyColumns.delete(x);
+      }
+    }
+
+    if (this.state.running) { requestAnimationFrame(this.renderFrame); }
+  }
 
 }
 
