@@ -68,7 +68,7 @@ props, and how can the Mezzo hijack this process?
 
 However, GSB pointed out a clearly-usable bad alternative, as follows.  One of the props the View
 gets is a RegisterMe callback.  On construction, it calls this callback with a pointer to itself.
-This callback is a method of the Mezzo, and now the Mezzo has a handle to the instance of hte View
+This callback is a method of the Mezzo, and now the Mezzo has a handle to the instance of the View
 (in case there was no better way to get this).  Now the Mezzo can call any methods that the View
 has, including `setState` or bespoke state-overriding methods.
 

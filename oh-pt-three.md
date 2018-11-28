@@ -2,6 +2,9 @@
 
 # This Whole File Is Just Some Notes
 
+**These notes are lightly outdated.  They pre-date the concept of "mezzos" and the renaming of
+minis-to-mezzos, and the use of "minigames" to mean the things inside mezzos.**
+
 
 
 Think about three types of things:

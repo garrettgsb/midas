@@ -12,8 +12,8 @@ class RelentlessPassageOfTime {
     for (let sub of this.subscribers) {
       let now = window.performance.now();
       let delta = now - this.lastTime;
-      let scraps = sub.sub.tick(sub.scraps + delta, delta, now-this.firstTime);
-      sub.scraps = Number(scraps || 0);
+      let scraps = sub.sub.tick(sub.scraps + delta, delta, now - this.firstTime);
+      sub.scraps = Number(scraps) || 0;
     }
     requestAnimationFrame(this.tick);     // TODO: configurable to obey other schedules
   }
