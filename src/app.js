@@ -1,6 +1,5 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
-import MineGame from './modules/mine/mineGame.js';
 import Economy from './economy';
 
 require('./styles/style.css');
@@ -129,34 +128,34 @@ class TheModal extends React.Component {
   }
 }
 
-
-class MineModal extends React.Component {
-  render() {
-    const mine = somewhereElse.mine;
-    return (
-      <div className='mine-modal'>
-        <div className='header'></div>
-        <div className='resource-list'>
-          { mine.resources.map(resource => {
-            return (
-              <div key={resource.icon} className='resource-list-item'>
-                <div>{resource.icon}</div>
-                <div>{resource.label}</div>
-                <div>{resource.quantity}</div>
-              </div>
-            );
-          })}
-
-        </div>
-        <div className='transfer-area'>
-          { /* TODO: You can exchange resources with wagons here. */ }
-          <img className='wagon' src='wagon.png'/>
-        </div>
-        <MineGame/>
-      </div>
-    );
-  }
-}
+// ///// NOTE: most of this is now the problem of Renderables, within the domain of the TheModal
+// class MineModal extends React.Component {
+//   render() {
+//     const mine = somewhereElse.mine;
+//     return (
+//       <div className='mine-modal'>
+//         <div className='header'></div>
+//         <div className='resource-list'>
+//           { mine.resources.map(resource => {
+//             return (
+//               <div key={resource.icon} className='resource-list-item'>
+//                 <div>{resource.icon}</div>
+//                 <div>{resource.label}</div>
+//                 <div>{resource.quantity}</div>
+//               </div>
+//             );
+//           })}
+// 
+//         </div>
+//         <div className='transfer-area'>
+//           { /* TODO: You can exchange resources with wagons here. */ }
+//           <img className='wagon' src='wagon.png'/>
+//         </div>
+//         <div> Some kinda Mine Game goes here </div>
+//       </div>
+//     );
+//   }
+// }
 
 class RelentlessPassageOfTime {
   constructor(forceUpdate) {
