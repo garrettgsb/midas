@@ -1,7 +1,7 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
 
-import ResourcePool from '../../resourcePool';
+import ResourcePool from 'ECON/resourcePool';
 
 import MineGameView from './GameView.js';
 
@@ -21,6 +21,12 @@ export default class MineMezzo {
 
 
   overworldTick(sumT, deltaT, accumT) {  // returns processedT
+////// this might even be right?!?
+//    while (sumT > this.strategySettings.period * 1000) {
+//      this.eso.rp.delta(this.strategySettings.resource, this.strategySettings.quantity);
+//      sumT -= this.strategySettings.period * 1000;
+//    }
+//    return sumT;
   }
 
   @autobind

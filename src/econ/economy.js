@@ -1,7 +1,8 @@
 
-import MineMezzo from './modules/mine/mezzo.js';
+import MineMezzo from 'MODULES/mine/mezzo.js';
 
-import ResourcePool from './resourcePool.js';
+import ResourcePool from 'ECON/resourcePool.js';
+import Location from 'ECON/location.js';
 
 //      // Mock map objects
 //      // These were previously used to populate the list of dummy ESOs, in case we want that //      again.
@@ -28,6 +29,10 @@ export default class Economy {
     ];
   }
 
+  getById(id) {
+    return this.esos.find(eso => eso.id === id);
+  }
+
   getSidebarItems() {
     // TODO: return all ESOs?
     // TODO: maybe some consistent sorting pattern?
@@ -36,7 +41,7 @@ export default class Economy {
 
   getMapItems() {
     // TODO: return whatever ESOs have a location?
-    return this.esos;
+    return this.esos.filter(eso => eso.loc);
   }
 
   addNewDamnThing(thingName) {
@@ -52,6 +57,7 @@ class IndustryESO {
   constructor(bullshit) {
     //super();
     this.rp = new ResourcePool();
+    this.loc = new Location({x: 860, y: 340});
     if (bullshit === 'mine') {
       this.mezzo = new MineMezzo();
       this.name = "Mine";
@@ -59,7 +65,6 @@ class IndustryESO {
       this.id = (''+Math.random()).slice(2);
       this.color = '#BB3399';
       this.icon = '☢️';
-      this.pos = { x: 860, y: 340 };
     }
   }
 

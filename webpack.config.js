@@ -40,7 +40,13 @@ const config = {
     new webpack.ProvidePlugin({
       _: 'lodash',
     })
-  ]
+  ],
+  resolve: {
+    alias: {
+      MODULES: path.resolve(__dirname, 'src/modules/'),
+      ECON: path.resolve(__dirname, 'src/econ/'),
+    },
+  },
 };
 
 module.exports = config;

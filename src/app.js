@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import React from 'react';
-import Economy from './economy';
+import Economy from 'ECON/economy';
 
 require('./styles/style.css');
 
@@ -44,12 +44,12 @@ class App extends React.Component {
   }
 
   render() {
-    const modalItem = this.state.economy.getSidebarItems().find(item => item.id === this.state.modalTarget);      // TODO: WRONG USE OF SIDEBAR ITEMS, yOU RUBE
+    const modalItem = this.state.economy.getById(this.state.modalTarget);
     return (
       <div className='game-main'>
         <Map items={this.state.economy.getMapItems()} onClick={this.changeModalTo} />
         <Sidebar items={this.state.economy.getSidebarItems()} onClick={this.changeModalTo} />
-        {this.state.modalTarget ? <TheModal eso={modalItem} /> : null}
+        {this.state.modalTarget ? <TheModal eso={modalItem} /> : undefined}
       </div>
     );
   }
@@ -72,14 +72,14 @@ class Map extends React.Component {
 
 class MapIcon extends React.Component {
   render() {
-    const { id, color, icon, pos, clickAction } = this.props.item;
+    const { id, color, icon, loc, clickAction } = this.props.item;
     return (
       <circle onClick={(e) => {
         e.stopPropagation();
         this.props.onClick();
       }}
-      cx={pos.x}
-      cy={pos.y}
+      cx={loc.x}
+      cy={loc.y}
       r="10"
       style={{ fill: color }}>
         {icon} {/* TODO: Make this show up */}
