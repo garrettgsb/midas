@@ -107,7 +107,7 @@ export default class MineActiveReact extends Component {
   
 
 
-  tick() {
+  tick(todoT, sumT, deltaT) {     // should return scrapsT
   }
 
   @autobind

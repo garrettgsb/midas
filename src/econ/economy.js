@@ -1,8 +1,9 @@
 
 import MineMezzo from 'MODULES/mine/mezzo.js';
 
-import ResourcePool from 'ECON/resourcePool.js';
 import Location from 'ECON/location.js';
+import ResourcePool from 'ECON/resourcePool.js';
+import RPOT from 'LIB/rpot';
 
 //      // Mock map objects
 //      // These were previously used to populate the list of dummy ESOs, in case we want that //      again.
@@ -27,6 +28,11 @@ export default class Economy {
     this.esos = [
       new IndustryESO('mine'),
     ];
+    this.rpot = new RPOT({period_ms: 1000});
+    for (let eso of this.esos) {
+      this.rpot.subscribe(eso);
+    }
+    window.economy = this;
   }
 
   getById(id) {
@@ -34,19 +40,19 @@ export default class Economy {
   }
 
   getSidebarItems() {
-    // TODO: return all ESOs?
     // TODO: maybe some consistent sorting pattern?
     return this.esos;
   }
 
   getMapItems() {
-    // TODO: return whatever ESOs have a location?
     return this.esos.filter(eso => eso.loc);
   }
 
   addNewDamnThing(thingName) {
+    // The hypothesis here is that there ends up being a list here of addable ESOs.
+    // Like maybe this morphs into the Realtor.  Then again, maybe everything is pre-added.
+    // Whatever.
     throw new Error("not implemented");
-    // TODO: big list of addable shit.  maybe ends up being Realtor code?
   }
 
 
@@ -59,13 +65,17 @@ class IndustryESO {
     this.rp = new ResourcePool();
     this.loc = new Location({x: 860, y: 340});
     if (bullshit === 'mine') {
-      this.mezzo = new MineMezzo();
+      this.mezzo = new MineMezzo(this);
       this.name = "Mine";
       this.buttonLabel = "Mine";
       this.id = (''+Math.random()).slice(2);
       this.color = '#BB3399';
       this.icon = '☢️';
     }
+  }
+
+  tick(todoT, sumT, deltaT) {  // returns scrapsT
+    return this.mezzo.overworldTick(todoT, sumT, deltaT);
   }
 
 

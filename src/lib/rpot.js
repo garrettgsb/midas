@@ -1,29 +1,53 @@
 import autobind from 'autobind-decorator';
 
 class RelentlessPassageOfTime {
-  constructor(config) {
-    this.firstTime = this.lastTime = window.performance.now();
+  constructor(config={}) {
     this.subscribers = [];
-    requestAnimationFrame(this.tick);     // TODO: configurable to obey other schedules
+    if (config.period_ms) {
+      this.procrastinate = () => setTimeout(this.tick, config.period_ms);
+    } else {
+      this.procrastinate = () => requestAnimationFrame(this.tick);
+    }
+    this.procrastinate();
+  }
+
+  // Argument is a "subscriber".  Subscriber should have a method like this:
+  //      sub.tick(todoT, sumT, deltaT)      (optionally returning scrapsT)
+  // If sub.tick does not return scrapsT, then todoT will be equal to deltaT
+  subscribe(sub) {
+    let bundle = {
+      sub,
+      first: performance.now(),
+      last: performance.now(),
+      scraps: 0,
+    };
+    this.subscribers.push(bundle);
+    this.oneTick(bundle);
+  }
+
+  unsubscribe(sub) {
+    this.subscribers = this.subscribers.filter(candiate => candidate !== sub);
   }
 
   @autobind
   tick() {
     for (let sub of this.subscribers) {
-      let now = window.performance.now();
-      let delta = now - this.lastTime;
-      let scraps = sub.sub.tick(sub.scraps + delta, delta, now - this.firstTime);
-      sub.scraps = Number(scraps) || 0;
+      this.oneTick(sub);
     }
-    requestAnimationFrame(this.tick);     // TODO: configurable to obey other schedules
+    this.procrastinate();
   }
 
-  subscribe(sub) {
-    this.subscribers.push({
-      sub,
-      scraps: 0,
-    });
+  // Will call  sub.tick(todoT, sumT, deltaT)      (optionally returning scrapsT)
+  oneTick(sub) {
+    let now = window.performance.now();
+    let sumT = now - sub.first;
+    let deltaT = now - sub.last;
+    let todoT = deltaT + sub.scraps;
+    sub.last = now;
+    let scrapsT = sub.sub.tick(todoT, sumT, deltaT);
+    sub.scraps = Number(scrapsT) || 0;
   }
+
 }
 
 

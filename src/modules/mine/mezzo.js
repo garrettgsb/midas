@@ -20,13 +20,13 @@ export default class MineMezzo {
 
 
 
-  overworldTick(sumT, deltaT, accumT) {  // returns processedT
-////// this might even be right?!?
-//    while (sumT > this.strategySettings.period * 1000) {
-//      this.eso.rp.delta(this.strategySettings.resource, this.strategySettings.quantity);
-//      sumT -= this.strategySettings.period * 1000;
-//    }
-//    return sumT;
+  overworldTick(todoT, sumT, deltaT) {  // returns scrapsT
+    let scrapsT = todoT
+    while (scrapsT > (this.strategySettings.period * 1000)) {
+      this.eso.rp.delta(this.strategySettings.resource, this.strategySettings.quantity);
+      scrapsT -= (this.strategySettings.period * 1000);
+    }
+    return scrapsT;
   }
 
   @autobind

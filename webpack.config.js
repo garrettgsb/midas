@@ -45,6 +45,7 @@ const config = {
     alias: {
       MODULES: path.resolve(__dirname, 'src/modules/'),
       ECON: path.resolve(__dirname, 'src/econ/'),
+      LIB: path.resolve(__dirname, 'src/lib/'),
     },
   },
 };
