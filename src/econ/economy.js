@@ -1,3 +1,4 @@
+import autobind from 'autobind-decorator';
 
 import MineMezzo from 'MODULES/mine/mezzo.js';
 
@@ -30,7 +31,7 @@ export default class Economy {
     ];
     this.rpot = new RPOT({period_ms: 1000});
     for (let eso of this.esos) {
-      this.rpot.subscribe(eso);
+      this.rpot.subscribe(eso.tick);
     }
     window.economy = this;
   }
@@ -74,8 +75,9 @@ class IndustryESO {
     }
   }
 
-  tick(todoT, sumT, deltaT) {  // returns scrapsT
-    return this.mezzo.overworldTick(todoT, sumT, deltaT);
+  @autobind
+  tick(todoT, totalT, deltaT) {  // returns scrapsT
+    return this.mezzo.overworldTick(todoT, totalT, deltaT);
   }
 
 

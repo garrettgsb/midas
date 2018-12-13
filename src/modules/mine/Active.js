@@ -57,16 +57,17 @@ export default class MineActiveReact extends Component {
     };
     this.initField(this.state.field);
     this.rpot = new RPOT();
-    this.rpot.subscribe(this);
   }
 
   wake(ctx) {
+    this.rpot.subscribe(this.tick);
     this.state.ctx = ctx;
     this.state.running = true;
     this.renderFrame();
   }
 
   sleep() {
+    this.rpot.unsubscribe(this.tick);
     this.state.running = false;
   }
 
@@ -107,7 +108,9 @@ export default class MineActiveReact extends Component {
   
 
 
-  tick(todoT, sumT, deltaT) {     // should return scrapsT
+  @autobind
+  tick(todoT, totalT, deltaT) {     // should return scrapsT
+    console.log(todoT)
   }
 
   @autobind

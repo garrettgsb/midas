@@ -20,7 +20,7 @@ export default class MineMezzo {
 
 
 
-  overworldTick(todoT, sumT, deltaT) {  // returns scrapsT
+  overworldTick(todoT, totalT, deltaT) {  // returns scrapsT
     let scrapsT = todoT
     while (scrapsT > (this.strategySettings.period * 1000)) {
       this.eso.rp.delta(this.strategySettings.resource, this.strategySettings.quantity);

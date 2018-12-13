@@ -2,7 +2,10 @@ import autobind from 'autobind-decorator';
 
 class RelentlessPassageOfTime {
   constructor(config={}) {
-    this.subscribers = [];
+    this.subscriptions = [];
+    this.config = Object.assign({
+      maxDelta_ms: Infinity
+    }, config);
     if (config.period_ms) {
       this.procrastinate = () => setTimeout(this.tick, config.period_ms);
     } else {
@@ -11,40 +14,46 @@ class RelentlessPassageOfTime {
     this.procrastinate();
   }
 
-  // Argument is a "subscriber".  Subscriber should have a method like this:
-  //      sub.tick(todoT, sumT, deltaT)      (optionally returning scrapsT)
-  // If sub.tick does not return scrapsT, then todoT will be equal to deltaT
-  subscribe(sub) {
+  // Argument is a subscriber-callback, with the following signature:
+  //      tick(todoT, totalT, deltaT)   -->    scrapsT
+  //
+  // * todoT is time in ms that should be processed (deltaT + scrapsT)
+  // * totalT is the time since the subscription
+  // * deltaT is the time since the last invokation
+  //
+  // If the return value is not (castable to) a number, todoT will be equal to deltaT
+  //
+  subscribe(cb) {
     let bundle = {
-      sub,
+      cb,
       first: performance.now(),
       last: performance.now(),
       scraps: 0,
     };
-    this.subscribers.push(bundle);
+    this.subscriptions.push(bundle);
     this.oneTick(bundle);
   }
 
-  unsubscribe(sub) {
-    this.subscribers = this.subscribers.filter(candiate => candidate !== sub);
+  unsubscribe(cb) {
+    this.subscriptions = this.subscriptions.filter(candidate => candidate.cb !== cb);
   }
 
   @autobind
   tick() {
-    for (let sub of this.subscribers) {
+    for (let sub of this.subscriptions) {
       this.oneTick(sub);
     }
     this.procrastinate();
   }
 
-  // Will call  sub.tick(todoT, sumT, deltaT)      (optionally returning scrapsT)
+  // Will call  sub.tick(todoT, totalT, deltaT)      (optionally returning scrapsT)
   oneTick(sub) {
     let now = window.performance.now();
-    let sumT = now - sub.first;
+    let totalT = now - sub.first;
     let deltaT = now - sub.last;
     let todoT = deltaT + sub.scraps;
     sub.last = now;
-    let scrapsT = sub.sub.tick(todoT, sumT, deltaT);
+    let scrapsT = sub.cb(todoT, totalT, deltaT);
     sub.scraps = Number(scrapsT) || 0;
   }
 
