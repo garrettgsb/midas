@@ -4,6 +4,7 @@ import MineMezzo from 'MODULES/mine/mezzo.js';
 
 import Location from 'ECON/location.js';
 import ResourcePool from 'ECON/resourcePool.js';
+import Vendor from 'ECON/vendor.js';
 import RPOT from 'LIB/rpot';
 
 //      // Mock map objects
@@ -28,6 +29,7 @@ export default class Economy {
   constructor() {
     this.esos = [
       new IndustryESO('mine'),
+      // new IndustryESO('market'),
     ];
     this.rpot = new RPOT({period_ms: 1000});
     for (let eso of this.esos) {
@@ -72,6 +74,15 @@ class IndustryESO {
       this.id = (''+Math.random()).slice(2);
       this.color = '#BB3399';
       this.icon = '☢️';
+    } else if (bullshit === 'market') {
+      this.mezzo = new MineMezzo(this);     // TODO: oh, boof, I need a whole new mezzo here
+      this.loc = new Location({x: 150, y: 280});
+      this.name = "Market (broken)";
+      this.buttonLabel = "Market (broken)";
+      this.id = (''+Math.random()).slice(2);
+      this.color = '#3399BB';
+      this.icon = '🏠';
+      this.vend = new Vendor();
     }
   }
 
